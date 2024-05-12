@@ -1,0 +1,39 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/headerStyle.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+
+</head>
+<body>
+    <div class="wrapper">
+        <div class="contact-info">
+            <div><i class="fas fa-phone"></i> (+65) 11-1111-1111</div>
+            <div><i class="fas fa-envelope"></i> info@toothcare.com</div>
+            <div><i class="fas fa-clock"></i> Mon-Sat: 9:00 - 19:00</div>            
+        </div>
+        <div class="menu-bar">
+            <div class="logo">
+                <img class="logo-img" src="../../static/images/Logo.png" alt="ToothCare Logo">
+                <span class="logo-text">ToothCare</span>
+            </div>
+            <ul class="nav-links">
+                <!-- <li><a href="#">Home</a></li>
+                <li><a href="#">Schedule</a></li>
+                <li><a href="#">Appointment</a></li> -->
+                {% block content %}{% endblock %}
+            </ul>
+            <button class="button">Log out<i class="fa-solid fa-arrow-right-from-bracket"></i></button>
+        </div>
+        <div class="doctor-info">
+
+        </div>
+    </div>
+</body>
+</html>

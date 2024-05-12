@@ -1,0 +1,6 @@
+{% extends "base/header.html" %}
+{% block content %}
+    {% for link in nav_links %}
+        <li><a href="#">{{ link }}</a></li>
+    {% endfor %}
+{% endblock %}
