@@ -1,0 +1,100 @@
+{% load static %}
+{% include "base/header.html" %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schedule</title>
+    <link rel="stylesheet" href="{% static 'css/scheduleMonth.css' %}">
+</head>
+
+<body>
+    <div class="container">
+        <div class="status-list">
+            <!-- <div class="status-item">
+                <div class="status-color expired"></div>
+                <span class="status-label">Expired</span>
+            </div>
+            <div class="status-item">
+                <div class="status-color enable"></div>
+                <span class="status-label">Enable</span>
+            </div>
+            <div class="status-item">
+                <div class="status-color active"></div>
+                <span class="status-label">Active</span>
+            </div>
+            <div class="status-item">
+                <div class="status-color booked"></div>
+                <span class="status-label">Booked</span>
+            </div> -->
+            {% for schedule in schedules %}
+                <div class="status-item">
+                    <div class="status-color booked"></div>
+                    <span class="status-label">{{schedule.iduser.name}}</span>
+                    <span class="status-label">{{schedule.startshift}}</span>
+                </div>
+            {% endfor %}
+        </div>
+
+        <div class="wrapper">
+            <div id="header">
+                <button id="todayButton">Today</i></button>
+                <button id="backButton"><i class="fa-solid fa-chevron-left"></i></button>
+                <button id="nextButton"><i class="fa-solid fa-chevron-right"></i></button>
+                <div id="monthDisplay"></div>
+                <div id="mode-selected">
+                    <select id="monthSelect">
+                        <option value="Month">Month</option>
+                        <option value="Day">Day</option>
+                    </select>
+                </div>
+            </div>
+            <div id="weekdays">
+                <div>Sunday</div>
+                <div>Monday</div>
+                <div>Tuesday</div>
+                <div>Wednesday</div>
+                <div>Thursday</div>
+                <div>Friday</div>
+                <div>Saturday</div>
+            </div>
+
+            <div id="calendar"></div>
+        </div>
+
+
+        <div id="modalBackDrop">
+            <div id="newEventModal">
+                <h2 class="titleModal">Form open schedule</h2>
+                <div class="scheduleForm">
+                    <h3>Start: </h3>
+                    <input class="datetimePicker" type="datetime-local" value="2023-01-01T12:00" />
+
+                    <h3>End: </h3>
+                    <input class="datetimePicker" type="datetime-local" value="2023-01-01T12:00" />
+
+                    <div class="buttonModal">
+                        <button id="cancelButton">Cancel</button>
+                        <button id="saveButton">Save</button>
+                    </div>
+                </div>
+
+            </div>
+
+            <div id="deleteEventModal">
+                <h2>Event</h2>
+
+                <p id="eventText"></p>
+
+                <button id="deleteButton">Delete</button>
+                <button id="closeButton">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="{% static 'js/scheduleMonth.js' %}"></script>
+</body>
+
+</html>
