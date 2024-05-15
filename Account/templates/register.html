@@ -1,0 +1,32 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Sign Up New Account</title>
+	<link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+	<div class="background-divider">
+		<div class="left-side">
+			<div class="login-form white-bg">
+				<form id="form" method="post" action="{% url 'register' %}">
+					{% csrf_token %}
+				<div class="title">Sign Up</div>
+				<input type="email" name="email" class="input-field" placeholder="Email Address">
+				<input type="password" name="password" class="input-field" placeholder="Password">
+        		<input type="confirmpassword" name="confirm_password" class="input-field" placeholder="Confirm Password">
+				<div class="links-and-buttons">
+        			<button type="submit" class="sign-in-button">Confirm</button>
+				</div>
+			</form>
+			</div>
+		</div>
+		<div class="right-side">
+			<div class="image-container">
+				<img class="dentist-image" src="{% static 'images/Dentist.PNG' %}" alt="Dentist image">
+			</div>
+		</div>
+	</div>
+</body>
+</html>
