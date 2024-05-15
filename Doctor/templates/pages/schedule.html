@@ -13,7 +13,7 @@
 <body>
     <div class="container">
         <div class="status-list">
-            <!-- <div class="status-item">
+            <div class="status-item">
                 <div class="status-color expired"></div>
                 <span class="status-label">Expired</span>
             </div>
@@ -28,14 +28,14 @@
             <div class="status-item">
                 <div class="status-color booked"></div>
                 <span class="status-label">Booked</span>
-            </div> -->
-            {% for schedule in schedules %}
+            </div>
+            <!-- {% for schedule in schedules %}
                 <div class="status-item">
                     <div class="status-color booked"></div>
                     <span class="status-label">{{schedule.iduser.name}}</span>
                     <span class="status-label">{{schedule.startshift}}</span>
                 </div>
-            {% endfor %}
+            {% endfor %} -->
         </div>
 
         <div class="wrapper">
@@ -67,32 +67,79 @@
 
         <div id="modalBackDrop">
             <div id="newEventModal">
-                <h2 class="titleModal">Form open schedule</h2>
-                <div class="scheduleForm">
-                    <h3>Start: </h3>
-                    <input class="datetimePicker" type="datetime-local" value="2023-01-01T12:00" />
+                <form action="{% url 'createSchedule'%}" method="post">
+                    {% csrf_token %}
+                    <h2 class="titleModal">Form open schedule</h2>
+                    <div class="scheduleForm">
+                        <h3>Start: </h3>
+                        <input name="startShift" class="datetimePicker" id="startPicker" type="datetime-local" step="3600" />
 
-                    <h3>End: </h3>
-                    <input class="datetimePicker" type="datetime-local" value="2023-01-01T12:00" />
+                        <h3>End: </h3>
+                        <input name="endShift" class="datetimePicker" id="endPicker" type="datetime-local" step="60" />
 
-                    <div class="buttonModal">
-                        <button id="cancelButton">Cancel</button>
-                        <button id="saveButton">Save</button>
+                        <div class="buttonModal">
+                            <button id="cancelButton">Cancel</button>
+                            <button type="submit" id="saveButton" onclick="return validateForm();">Save</button>
+                        </div>
                     </div>
-                </div>
-
-            </div>
-
-            <div id="deleteEventModal">
-                <h2>Event</h2>
-
-                <p id="eventText"></p>
-
-                <button id="deleteButton">Delete</button>
-                <button id="closeButton">Close</button>
+                </form>
             </div>
         </div>
     </div>
+
+    <script>
+        const schedules = JSON.parse('{{ schedules_json|escapejs|safe }}');
+    </script>
+    <script>
+        // window.onload = function() {
+        // location.reload();
+        // };
+
+        function validateForm() {
+            var startShift = document.querySelector("input[name='startShift']").value;
+            var endShift = document.querySelector("input[name='endShift']").value;
+
+            if (!startShift || !endShift) {
+                alert("Please fill in both start and end times.");
+                return false;
+            }
+
+            var startTime = new Date(startShift);
+            var endTime = new Date(endShift);
+            var now = new Date();
+
+            if (startTime >= endTime) {
+                alert("Start time cannot be later than or equal to end time!");
+                return false;
+            }
+
+            if (startTime < now) {
+                alert("Start time cannot be in the past!");
+                return false;
+            }
+
+            if (endTime < now) {
+                alert("End time cannot be in the past!");
+                return false;
+            }
+
+            var startHour = startTime.getHours();
+            var endHour = endTime.getHours();
+
+            if (startHour < 7 || startHour >= 19) {
+                alert("Start time is outside of working hours (7:00 to 19:00)!");
+                return false;
+            }
+
+            if (endHour < 7 || endHour >= 19) {
+                alert("End time is outside of working hours (7:00 to 19:00)!");
+                return false;
+            }
+
+            return true;
+        }
+    </script>
+
 
     <script src="{% static 'js/scheduleMonth.js' %}"></script>
 </body>

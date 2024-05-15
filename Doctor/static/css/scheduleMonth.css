@@ -65,15 +65,6 @@ body {
     background-color: transparent;
     border: 1px solid black;
 }
-
-.active {
-    background-color: var(--strong-main-color);
-}
-
-.booked {
-    background-color: var(--booked-schedule-color);
-}
-
 .status-label {
     font-size: 16px;
 }
@@ -176,8 +167,14 @@ button {
 }
 
 .past-time {
-    background-color: var(--main-color); /* hoặc màu xanh khác */
-  }
+    background-color: var(--main-color);
+}
+.active {
+    background-color: var(--strong-main-color);
+}
+.booked {
+    background-color: var(--booked-schedule-color);
+}
 .selected {
     border: 2px solid black;
 }
@@ -221,8 +218,7 @@ button {
     justify-content: center;
 }
 /* Modal */
-#newEventModal,
-#deleteEventModal {
+#newEventModal {
     display: none;
     z-index: 20;
     padding: 16px 0 25px 0;
