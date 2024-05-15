@@ -1,9 +1,4 @@
-{% extends "base/header.html" %}
-{% block content %}
-    {% for link in nav_links %}
-        <li><a href="#">{{ link }}</a></li>
-    {% endfor %}
-{% endblock %}
+{% include "base/header.html" %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,6 +7,6 @@
     <title>Document</title>
 </head>
 <body>
-    <h1>This is Schedule</h1>
+    <h1>This is appointment page</h1>
 </body>
 </html>
