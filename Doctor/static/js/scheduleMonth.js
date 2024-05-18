@@ -11,6 +11,7 @@ let events = localStorage.getItem('events') ? JSON.parse(localStorage.getItem('e
 const calendar = document.getElementById('calendar');
 const newEventModal = document.getElementById('newEventModal');
 const backDrop = document.getElementById('modalBackDrop');
+const container_meeting_info = document.getElementById('container-meeting-info');
 const weekdays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
 
@@ -34,7 +35,7 @@ function openModal(timeClicked, dayClicked) {
   const minute = ('0' + clickedDate.getMinutes()).slice(-2);
 
   const formattedStartDate = `${year}-${month}-${day}T${hours24}:${minute}`;
-  const formattedEndDate = `${year}-${month}-${day}T18:30`;
+  const formattedEndDate = `${year}-${month}-${day}T19:00`;
   document.getElementById('startPicker').value = formattedStartDate;
   document.getElementById('endPicker').value = formattedEndDate;
 }
@@ -49,6 +50,42 @@ function saveEvent() {
   closeModal();
 }
 
+function openMeetingDetail(time, status) {
+  container_meeting_info.style.display = 'flex';
+  const right_info = document.getElementById('right-info');
+  const cancelButtonAppointment = document.getElementById('cancelButtonAppointment');
+
+  document.getElementById('shift').value = time.toString().slice(0, -26);;
+  if(status === 1){
+    right_info.style.display = 'none';
+    document.getElementById('status').value = 'Active'
+    cancelButtonAppointment.style.display = 'block'
+  } else if(status === 2){
+    right_info.style.display = 'block';
+    document.getElementById('status').value = 'Booked'
+    cancelButtonAppointment.style.display = 'none'
+    const xhr = new XMLHttpRequest();
+
+    xhr.open('POST', '/path/to/getMeetingByIdSchedule/', true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === XMLHttpRequest.DONE) {
+        if (xhr.status === 200) {
+          console.log(xhr.responseText);
+        } else {
+          console.error('Có lỗi xảy ra:', xhr.statusText);
+        }
+      }
+    };
+    const data = JSON.stringify({idDoctor: document.getElementById('idDoctor').value, time: document.getElementById('shift').value, status: status});
+    xhr.send(data);
+  }
+  window.scrollTo(0,document.body.scrollHeight);
+}
+
+function closeMeetingDetail() {
+  container_meeting_info.style.display = 'none';
+}
 
 function loadDayView(date) {
   const calendar = document.getElementById('calendar');
@@ -95,6 +132,10 @@ function loadDayView(date) {
               else if (schedule.status === 2) {
                 timeSlot.classList.add('booked');
               }
+              timeSlot.addEventListener('click', () => {
+                // console.log('dateeeeeee: ' + timeSlotDate);
+                openMeetingDetail(timeSlotDate, schedule.status);
+              });
             }
           }
         }
@@ -117,6 +158,7 @@ function loadMonthView(isToday = false) {
   calendar.style.display = 'grid';
   const dt = new Date();
   const today = new Date(dt.getFullYear(), dt.getMonth(), dt.getDate());
+  const todayWithTime = new Date(dt.getFullYear(), dt.getMonth(), dt.getDate(), dt.getHours(), dt.getMinutes(), dt.getSeconds());
 
   if ((navDay !== 0 || first_load_month_view !== 0) && isToday !== true) {
     dt.setDate(selectedDayNumber)
@@ -155,11 +197,6 @@ function loadMonthView(isToday = false) {
   else {
     selectedMonthDay = new Date(year, month, selectedDayNumber);
   }
-
-  // if(dt.getHours() >= 19 || (dt.getHours() = 18 && dt.getMinutes() >= 30))
-  // {
-    
-  // }
   const isPastTime = (dt.getHours() >= 19 || (dt.getHours() === 18 && dt.getMinutes() >= 30)) ;
 
   for (let i = 1; i <= paddingDays + daysInMonth; i++) {
@@ -171,20 +208,23 @@ function loadMonthView(isToday = false) {
     if (i > paddingDays) {
       daySquare.innerText = i - paddingDays;
       const currentDate = new Date(year, month, i - paddingDays);
-      if (currentDate < today || (isPastTime && currentDate.getDate() === today.getDate())) {
+      if (currentDate < today || (isPastTime && currentDate.getDate() === today.getDate() && currentDate.getMonth() === today.getMonth() && currentDate.getFullYear() === today.getFullYear())) {
         daySquare.classList.add('past-time');
       }
       else {
         for (const schedule of schedules) {
+
           const startShift = new Date(schedule.startshift).toISOString().slice(0, -1);
           const newStartShift = new Date(startShift)
           if (currentDate.getFullYear() === newStartShift.getFullYear() && currentDate.getMonth() === newStartShift.getMonth() && currentDate.getDate() === newStartShift.getDate()) {
-            if (schedule.status === 1) {
-              daySquare.classList.add('active');
-            }
-            else if (schedule.status === 2) {
-              daySquare.classList.add('booked');
-            }
+            if(newStartShift.getTime() > todayWithTime.getTime()) {
+              if (schedule.status === 1) {
+                daySquare.classList.add('active');
+              }
+              else if (schedule.status === 2) {
+                daySquare.classList.add('booked');
+              }              
+            }  
           }
         }
       }
@@ -227,6 +267,7 @@ function initButtons() {
         navMonth--
       }
       loadDayView(newDate);
+      closeMeetingDetail()
     }
   });
   document.getElementById('backButton').addEventListener('click', () => {
@@ -246,6 +287,7 @@ function initButtons() {
         navMonth--
       }
       loadDayView(newDate);
+      closeMeetingDetail()
     }
   });
   document.getElementById('todayButton').addEventListener('click', () => {
@@ -259,23 +301,35 @@ function initButtons() {
       loadMonthView(true);
     } else if (currentView === 'Day') {
       loadDayView(today);
+      closeMeetingDetail()
     }
   });
-  document.getElementById('saveButton').addEventListener('click', saveEvent);
+  document.getElementById('saveButton').addEventListener('click', function(event) {
+    if (validateForm()) {
+      saveEvent();
+    } else {
+      event.preventDefault();
+    }
+  });  
   document.getElementById('cancelButton').addEventListener('click', closeModal);
+  document.getElementById('closeMeetingButton').addEventListener('click', closeMeetingDetail);
 }
 function load() {
+  
   const monthSelect = document.getElementById('monthSelect');
   const selectedOption = monthSelect.value;
   if (selectedOption === 'Month') {
     loadMonthView(false);
+    closeMeetingDetail()
   } else if (selectedOption === 'Day') {
     loadDayView(selectedMonthDay);
+    closeMeetingDetail()
   }
 }
 document.getElementById('monthSelect').addEventListener('change', load);
 initButtons();
 document.addEventListener('DOMContentLoaded', function () {
+  window.scrollTo(0,0);
   const monthSelect = document.getElementById('monthSelect');
   monthSelect.value = 'Month';
   load();

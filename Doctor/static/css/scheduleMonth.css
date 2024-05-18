@@ -7,6 +7,7 @@
     --grey-button-color: #828C8D;
     --booked-schedule-color: #FEB3B0;
     --hover-main-color: rgba(162, 190, 193, 0.28);
+    --underline-text-color: #202A2C;
 }
 
 ::-webkit-scrollbar {
@@ -204,6 +205,101 @@ button {
     background-color: #FFFCFF !important;
     box-shadow: none !important;
 }
+/* ------------------------------------------------------------- */
+#container-meeting-info{
+    display: none;
+    z-index: 20;
+    width: 100%;
+    align-items: center;
+    justify-content: flex-end;
+    margin-bottom: 30px;
+    
+}
+.meeting-info{
+    width: 62%;
+    height: 400px;
+    background-color: white;
+    margin-right: 100px;
+    align-self: flex-end;
+    border-radius: 4px;
+    box-shadow: 0px 3px 4px rgba(0, 0, 0, 0.24);
+}
+.title{
+    width: 100%;
+    height: 40px;
+    background-color: white;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    border-bottom: 1px solid --hover-main-color;
+    box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.24);
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+}
+.fa-solid.fa-xmark{
+    font-size: 16px;
+    margin-right: 8px;
+    cursor: pointer;
+}
+
+.main-meeting{
+    padding: 1px 0 0px 0;
+    width: 100%;
+    height: 360px;
+    display: flex;
+    flex-direction: row;
+}
+#left-info, #right-info{
+    width: 50%;
+    height: 100%;
+    padding: 30px;
+}
+#left-info{
+    border-bottom-left-radius: 4px;
+    background-color: white;
+}
+#right-info{
+    display: block;
+    border-bottom-right-radius: 4px;
+    background-color: var(--main-color);
+}
+.row{
+    margin: 10px 5px 10px 5px;
+    display: flex;
+    align-items: center;
+}
+.row label{
+    width: 84px;
+    font-size: 16px;
+    align-self: flex-end;
+    margin-bottom: 4px;
+}
+.row input{
+    border: none;
+    border-bottom: 1px solid var(--underline-text-color);
+    height: 30px;
+    width: 60%;
+    cursor: default;
+}
+#right-info input{
+    background-color: var(--main-color);
+    text-align: end;
+}
+.row input:focus {
+    outline: none;
+}
+#left-info button{
+    display: none;
+    background-color: var(--main-color);
+    margin-top: 50px;
+    height: 32px;
+    width: 184px;
+    color: black;
+}  
+
+/* ----------------------------------------------------------------------------------------- */
 
 #modalBackDrop {
     display: none;
