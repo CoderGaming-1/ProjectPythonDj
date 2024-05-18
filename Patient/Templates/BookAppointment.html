@@ -1,0 +1,160 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+{% load static %}
+<style>
+    .intro{
+        padding: 5px;
+        padding-left: 20px;
+        background-color: #42AEB1;
+        border-radius: 8px;
+        margin: 30px;
+    }
+    p, h1, h2, h3, h4, h5, h6 {
+        font-family: 'Roboto', sans-serif;
+    }
+    .box{
+        background-color:#F4F4F4; 
+        margin: 20px; 
+        box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2); 
+        border-radius: 5px;
+        flex: 0 1 calc(25% - 10px); 
+        margin: 5px;
+    }
+    .box:hover {
+        background-color: #A2BEC1; 
+        cursor: pointer;
+    }
+    .box.clicked {
+        background-color: #A2BEC1;
+    }
+    .imgIntroPatient{
+        width: 80px;
+        height: auto;
+    }
+    .submitForm{
+        margin-left: 25px;
+        margin-top: 30px;
+        border: none; 
+        background-color: #42AEB1; 
+        border-radius: 10px; 
+        width: 20%; 
+        height: 50px; 
+        font-size: 20px; 
+        font-family: 'Roboto', sans-serif; 
+        color: #ffffff;
+    }
+    .submitForm:hover {
+        background-color: #A2BEC1; 
+        cursor: pointer;
+    }
+</style>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var boxes = document.querySelectorAll(".box");
+
+        boxes.forEach(function(box) {
+            box.addEventListener("click", function() {
+                boxes.forEach(function(b) {
+                    b.classList.remove("clicked");
+                });
+                this.classList.add("clicked");
+                // Lấy giá trị ID của div box được click
+                var scheduleId = this.id;
+
+                // Cập nhật giá trị của trường input ẩn
+                document.getElementById("idScheduleInput").value = scheduleId;
+
+                // Lấy info bác sĩ từ thuộc tính data-
+                var doctorName = this.getAttribute("data-name");
+                var phone = this.getAttribute("data-phone");
+                var graduation = this.getAttribute("data-graduation");
+                var gender = this.getAttribute("data-gender");
+                var birth = this.getAttribute("data-birth");
+                var nation = this.getAttribute("data-nation");
+
+                // Cập nhật nội dung của <p id="nameDr">
+                document.getElementById("name").textContent = doctorName;
+                document.getElementById("phone").textContent = phone;
+                document.getElementById("graduation").textContent = graduation;
+                document.getElementById("gender").textContent = gender;
+                document.getElementById("birth").textContent = birth;
+                document.getElementById("nation").textContent = nation;
+            });
+        });
+    });
+    function validateForm() {
+        var idSchedule = document.getElementById("idScheduleInput").value;
+        var idPatient = document.querySelector("input[name='idPatient']").value;
+        var symptom = document.querySelector("textarea[name='symptom']").value;
+        
+        if (!idSchedule || !idPatient || !symptom) {
+            alert("Please fill in all required fields.");
+            return false; // Ngăn form được gửi đi nếu có trường trống
+        }
+        return true;
+    }
+</script>
+
+<div class="intro">
+    <h2>Hi, {{ name }}</h2>
+    <div style="display: flex; padding: 10px;">
+        <p>
+            We use the latest technology and techniques to provide the most effective care possible, and we are dedicated to helping you achieve optimal oral health. With our customized treatment plans, you can enjoy a healthy, beautiful smile for life.
+        </p>
+        <!-- <img class="imgIntroPatient" src="../static/images/imgIntroPatient.png" alt="ToothCareimgIntroPatient"> -->
+        <img class="imgIntroPatient" src="C:/D/Study/StudyPython/BT_CK/ProjectPythonDj/Patient/static/images/imgIntroPatient.png" alt="ToothCareimgIntroPatient">
+    </div>
+</div>
+
+<div style="display: flex; width: 100%;">
+<form action="{% url 'PostBookAppointment'%}" method="post" style="padding-left: 10px; width: 70%;">
+    {% csrf_token %}
+    <div class="divTittle" style="display: flex; margin-left: 25px; height: 40px;">
+        <div style="background-color: #4FA5A8; height: auto; width: 10px; margin-right: 10px;"></div>
+        <h3 style="color: #4FA5A8; margin: 10px;">Choose Schedule</h3>
+    </div>
+    <div name="SchedulesPart" style="display: flex; flex-wrap: wrap; margin-bottom: 20px; padding-left: 25px;">
+        {% for schedule in schedules %}
+            <div class="box" id="{{ schedule.id }}"
+            data-name="{{ schedule.iduser.name }}"
+            data-phone="{{ schedule.iduser.phonenumber }}"
+            data-graduation="{{ schedule.iduser.graduation }}"
+            data-gender="{{ schedule.iduser.gender }}"
+            data-birth="{{ schedule.iduser.birth }}"
+            data-nation="{{ schedule.iduser.nation }}">
+                <p style="font-size: 16px; margin: 30px 20px 10px 20px">{{schedule.startshift}}</p>
+                <h4 style="margin-left: 20px; margin-bottom: 40px;">{{schedule.iduser.name}}</h4>
+            </div>
+        {% endfor %}
+    </div>
+
+    <div class="divTittle" style="display: flex; margin-left: 25px; height: 40px;">
+        <div style="background-color: #4FA5A8; height: auto; width: 10px; margin-right: 10px;"></div>
+        <h3 style="color: #4FA5A8; margin: 10px;">Symptom</h3>
+    </div>
+    <textarea style="margin-left: 25px; margin-top: 20px; border-color: #42AEB1; border-radius: 10px; width: 80%; font-size: 18px; font-family: 'Roboto', sans-serif;" name="symptom" cols="10" rows="5"></textarea>
+    <br>
+    <input type="text" name="idSchedule" id="idScheduleInput" hidden>
+    <input type="text" name="idPatient" value="{{ idPatient }}" hidden>
+    <input type="submit" class="submitForm" name="Book Appointment" onclick="return validateForm();">
+</form>
+
+<div style="background-color: #42AEB1; width: 30%; padding-left: 25px; color: #ffffff; border-radius: 5px; margin-left: 10px;">
+    <h5>Name</h5>
+    <p id="name"></p>
+    <h5>Phone Number</h5>
+    <p id="phone"></p>
+    <h5>Graduation</h5>
+    <p id="graduation"></p>
+    <h5>Gender</h5>
+    <p id="gender"></p>
+    <h5>Birth</h5>
+    <p id="birth"></p>
+    <h5>Nation</h5>
+    <p id="nation"></p>
+</div>
+</div>
+{% endblock content %}
