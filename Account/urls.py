@@ -10,4 +10,5 @@ urlpatterns = [
     path('admin/', views.admin, name='admin'),
     path('patient/', views.patient, name='patient'),
     path('doctor/<int:idUser>', views.doctor, name='doctor'),
+    path('forgetpass/', views.forget_password, name='forgetpass'),
 ]

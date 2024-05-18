@@ -100,7 +100,7 @@ li, a {
 }
 /* doctor-info */
 .doctor-info{
-    height: 360px;
+    height: 400px;
     width: 100%;
     background-color: var(--strong-main-color);
 }

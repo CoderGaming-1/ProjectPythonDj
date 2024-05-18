@@ -37,3 +37,5 @@ class SignUpForm(UserCreationForm):
     class Meta:
         model = Users
         fields = ('email','password1','password2')
+class PasswordResetForm(forms.Form):
+    email = forms.EmailField(max_length=254, required=True, widget=forms.EmailInput(attrs={'class': 'form-control'}))
