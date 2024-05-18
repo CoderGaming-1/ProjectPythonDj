@@ -12,12 +12,12 @@
     --pending-font-color: #a68b00;
     --active-button-color: #c8e6c9;
     --active-font-color: #388e3c;
-    --rejected-button-color:  #ffcdd2;
-    --rejected-font-color:  #c62828;
-    --inactive-button-color:  #bed0d2;
-    --inactive-font-color:  #505758;
-    --expired-button-color:  #bed0d2;
-    --expired-font-color:  #505758;
+    --rejected-button-color: #ffcdd2;
+    --rejected-font-color: #c62828;
+    --inactive-button-color: #bed0d2;
+    --inactive-font-color: #505758;
+    --expired-button-color: #bed0d2;
+    --expired-font-color: #505758;
     --child-row-color: #def3f67e;
 }
 
@@ -42,37 +42,65 @@ body {
     scrollbar-width: none;
     /* Firefox */
 }
-.top-container{
+
+
+.top-container {
     height: 40px;
     margin: 60px 50px 20px 50px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
 }
-.top-container input{
+
+.top-container input {
     border: none;
     border-bottom: 1px solid var(--underline-text-color);
     height: 30px;
     width: 20%;
     cursor: default;
 }
+
 .top-container input:focus {
     outline: none;
 }
-.top-container button{
+
+.top-container button {
     border: none;
     border-radius: 4px;
     background-color: var(--strong-main-color);
     padding: 0.6rem 3rem;
+    height: 32px;
     color: black;
     margin-left: 20px;
 }
 
-.table-container{
+.status-filter{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    margin-left: 10px;
+}
+.status-filter input[type='radio'] {
+    transform: scale(1.5);
+}
+
+.status-filter label{
+    margin: 4px 20px 4px 4px;
+}
+
+.table-container {
+    /* width: 100%; */
     display: grid;
     justify-content: flex-start;
     align-items: center;
     font-size: 16px;
     margin: 10px 50px 10px 50px;
 }
-table{
+
+table {
+    /* width: 1600px; */
     border-collapse: collapse;
     box-shadow: 0px 3px 4px rgba(0, 0, 0, 0.24);
     background-color: white;
@@ -80,20 +108,36 @@ table{
     overflow: hidden;
     margin-bottom: 40px;
 }
-thead{
+
+thead {
     box-shadow: 0px 3px 4px rgba(0, 0, 0, 0.24);
     background-color: var(--main-color);
 }
+
 th {
-    padding: 0.9rem 3rem;
+    padding: 1rem 2.5rem;
     text-transform: uppercase;
     letter-spacing: 0.1rem;
     font-size: 15px;
+    text-align: left;
 }
+/* #meetingTable td:nth-child(1) { width: 0; } */
+#meetingTable td:nth-child(1) { width: 50px; } 
+#meetingTable td:nth-child(2) { width: 195px; } 
+#meetingTable td:nth-child(3) { width: 216px; } 
+#meetingTable td:nth-child(4) { width: 260px; } 
+#meetingTable td:nth-child(5) { width: 60px; } 
+#meetingTable th:nth-child(6) { width: 190px; } 
+#meetingTable td:nth-child(7) { width: 216px; } 
+#meetingTable td:nth-child(8) { width: 160px; } 
 td{
-    padding: 0.65rem 2.2rem;
+    padding: 0.65rem 2.5rem;
 }
-.status-meeting{
+p {
+    margin: 5px;
+} 
+
+.status-meeting {
     height: 40px;
     padding: 0.05rem 1.5rem;
     border-radius: 4px;
@@ -114,19 +158,22 @@ td{
     color: var(--active-font-color);
 }
 
-.status-rejected{
+.status-rejected {
     background-color: var(--rejected-button-color);
     color: var(--rejected-font-color);
 }
 
-.status-inactive, .status-expired{
+.status-inactive,
+.status-expired {
     background-color: var(--grey-button-color);
     color: var(--inactive-font-color);
 }
+
 tr:nth-child(even) {
     background-color: var(--child-row-color);
 }
-.action-form-btn{
+
+.action-form-btn {
     width: 30px;
     height: 30px;
     border-radius: 50%;
@@ -138,29 +185,126 @@ tr:nth-child(even) {
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    margin: 0 5px; 
+    margin: 0 5px;
     padding: 0;
 
 }
-.action-form-btn i{
+.action-form-btn a{
+    text-decoration: none;
+    color: white;
+}
+#cancelBtn{
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--strong-main-color);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin: 0 5px;
+    padding: 0;
+}
+#cancelBtn i{
     font-size: 14px;
 }
+.action-form-btn i {
+    font-size: 14px;
+}
+
 .action-form-btn::after {
     content: attr(data-tooltip);
     position: absolute;
-    bottom: 100%; 
+    bottom: 100%;
     left: 50%;
     transform: translateX(-50%);
-    background-color: #333; 
-    color: #fff; 
+    background-color: #333;
+    color: #fff;
     padding: 5px 10px;
     border-radius: 4px;
-    white-space: nowrap; 
-    opacity: 0; 
-    pointer-events: none; 
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
     transition: opacity 0.2s;
     margin-bottom: 5px;
 }
+
 .action-form-btn:hover::after {
-    opacity: 1; 
+    opacity: 1;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgb(0, 0, 0);
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    border-radius: 5px;
+    width: 36%;
+    height: 200px;
+    flex-direction: column;
+    position: relative;
+}
+
+#closeReasonForm {
+    color: #aaa;
+    float: right;
+    font-size: 24px;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+#closeReasonForm:hover,
+#closeReasonForm:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.modal-content label {
+    display: block;
+    margin-top: 10px;
+}
+#reasonCancel {
+    border: none;
+    border-bottom: 1px solid var(--underline-text-color);
+    height: 40px;
+    width: 100%;
+    cursor: default;
+    margin-top: 10px;
+    font-size: 16px;
+}
+
+#reasonCancel:focus{
+    outline: none;
+}
+
+#confirmBtn {
+    background-color: var(--strong-main-color);
+    color: white;
+    padding: 20px 20px;
+    margin: 20px 0;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    width: 100%;
 }
