@@ -1,0 +1,36 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Welcome Back</title>
+	<link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+	<div class="background-divider">
+		<div class="left-side">
+			<div class="login-form white-bg">
+				<form id="form" method="post" action="{% url 'login' %}">
+					{% csrf_token %}
+					<div class="title">Welcome Back</div>
+					<input type="email" name="email" class="input-field" placeholder="Email Address" required>
+					<input type="password" name="password" class="input-field" placeholder="Password" required>
+					<img src="{% static 'images/eyeoff.png' %}" alt="Eye Off">
+					<div class="links-and-buttons">
+						<a href="{% url 'forgetpass' %}" class="forgot-password">Forgot your password?</a>
+						<button type="submit" class="sign-in-button" id="signin-button">Sign In</button>
+						<div class="white-line"></div>
+						<a href="{% url 'register' %}" class="sign-up">Don't have an account? Sign up</a>
+					</div>
+				</form>
+			</div>
+		</div>
+		<div class="right-side">
+			<div class="image-container">
+				<img class="dentist-image" src="{% static 'images/Dentist.PNG' %}" alt="Dentist image">
+			</div>
+		</div>
+	</div>
+	
+</body>
+</html>

@@ -8,7 +8,8 @@
     <link rel="stylesheet" href="{% static 'css/headerStyle.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-
+    <link rel="stylesheet" href="{% static 'css/slider.css' %}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap">
 
 </head>
 <body>
@@ -30,9 +31,64 @@
             </ul>
             <button class="button">Log out<i class="fa-solid fa-arrow-right-from-bracket"></i></button>
         </div>
-        <div class="doctor-info">
 
-        </div>
+        <div class="doctor-info">
+            <div class="profile-picture">
+              <img src="{% static 'images/Doctor.PNG' %}" alt="Profile Picture">
+            </div>
+
+            <div class="profile-info">
+              <h1>{{ first_user.name}}</h1>
+              <!-- <div class="line">
+                <img src="{% static 'images/Line.png' %}" alt="Line Icon">
+              </div> -->
+              <div class="white-line"></div>
+
+              
+              <div class="field-textu">
+                <label for="email">
+                  <img src="{% static 'images/email.png' %}" alt="Email Icon"> Email: {{user_email}}
+                </label><br><br>
+                <label for="phone">
+                  <img src="{% static 'images/phone.png' %}" alt="Phone Icon"> Phone Number: {{first_user.phonenumber}}
+                </label>
+              </div>
+              
+              <div class="field-text2">
+                <label for="id">ID No:    <span style="text-decoration: underline;">{{first_user.idrole}}</span></label>
+              </div>
+              <br>
+              <br>
+              <div class="field-text2">
+                <label for="nation">Nation:     <span style="text-decoration: underline;">{{first_user.nation}}</span></label>
+              </div><br><br>
+              <div class="field-text2">
+                <label for="graduated">Graduated From:    <span style="text-decoration: underline;">{{first_user.graduation}}</span></label>
+              </div>
+              <div class="field-text3">
+                <label for="birth">Birth: <span style="text-decoration: underline;">{{first_user.birth}}</span></label>
+              </div><br><br>
+              <div class="field-text3">
+                <label for="gender">Gender:<span style="text-decoration: underline;">
+                    {% if first_user.gender == 1 %}
+                        Nu
+                    {% elif first_user.gender == 0 %}
+                        Nam
+                    {% else %}
+                        Unknown
+                    {% endif %}
+                  </span>
+                </label>
+            </div>
+              <div class="field-text-setting">
+              <img src="{% static 'images/edit.png' %}" alt="Edit Icon">
+              <img src="{% static 'images/settings.png' %}" alt="Setting Icon">
+            </div>
+            <!-- <div class="field-text-line">
+              <img src="{% static 'images/Line.png' %}" alt="Line Icon">
+            </div> -->
+            </div>  
+          </div>
     </div>
 </body>
 </html>
