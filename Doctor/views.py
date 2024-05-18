@@ -265,7 +265,7 @@ def getMeetingByIdSchedule(request):
 
 def appointment(request):
     iduser = 4
-    meetings = Meetings.objects.filter(idschedule__iduser=iduser).select_related('idschedule', 'idpatient').order_by('idschedule__startshift')
+    meetings = Meetings.objects.filter(idschedule__iduser=iduser).select_related('idschedule', 'idpatient').order_by('-idschedule__startshift')
 
     STATUS_MAP = {
         1: 'Pending',
@@ -294,45 +294,68 @@ def appointment(request):
         "nowTime": now,
     }
     return render(request, 'pages/appointment.html', context)
-
-def approveMeeting(request):
+def approveMeeting(idMeeting):
     try:
-        idDoctor = request.POST["idDoctor"]
-        statusStr = request.POST["status"]
-        shift = request.POST["shift"]
-        status = 0
-        if(statusStr == 'Active'):
-            status = 1
-        elif(statusStr == 'Booked'):
-            status = 2
-        
-        print(f"Received idDoctor: {idDoctor}, status: {status}, shift: {shift}")
+        meeting = Meetings.objects.select_related('idschedule').get(id=idMeeting)
+        meeting.status = 2
+        meeting.updatedby = meeting.idschedule.iduser.id
+        meeting.updateddate = datetime.now()
+        meeting.save()
+        return True
+    except Meetings.DoesNotExist:
+        return False
 
-        try:
-            # Parse the incoming shift string to a datetime object
-            schedule_time = datetime.strptime(shift, '%a %b %d %Y %H:%M:%S')
-            formatted_time = schedule_time.strftime('%Y-%m-%d %H:%M:%S.%f')
-        except ValueError as e:
-            return HttpResponse(f"Error parsing date: {str(e)}")
-        
-        idSchedule = getScheduleByStatusTime(idDoctor, status, formatted_time)
-        
-        if isinstance(idSchedule, HttpResponse):
-            return idSchedule 
-        
-        print(f"Obtained idSchedule: {idSchedule}")
-        if idSchedule:
-            schedule_id = int(idSchedule)
-            schedule = Schedules.objects.filter(id=schedule_id).first()
-            
-            if schedule:
-                schedule.status = 0
-                schedule.save()
-                return redirect('/Doctor/schedule')   
-            else:
-                return HttpResponse(f"No schedule found with id {idSchedule}.")
-        else:
-            return HttpResponse("No schedule id found for the given status and shift.") 
+def rejectMeeting(idMeeting):
+    try:
+        meeting = Meetings.objects.select_related('idschedule').get(id=idMeeting)
+        meeting.status = 3
+        meeting.updatedby = meeting.idschedule.iduser.id
+        meeting.updateddate = datetime.now()
+        meeting.save()
+        return True
+    except Meetings.DoesNotExist:
+        return False
+    
+def cancelMeeting(idMeeting, reasonCancel):
+    try:
+        print(idMeeting)
+        print(reasonCancel)
+        meeting = Meetings.objects.select_related('idschedule').get(id=idMeeting)
+        meeting.status = 0
+        meeting.reason = reasonCancel
+        meeting.updatedby = meeting.idschedule.iduser.id
+        meeting.updateddate = datetime.now()
+        meeting.save()
+        return True
+    except Meetings.DoesNotExist:
+        return False
+
+def appointmentDetail(request, idMeeting):
+    try:
+        meeting = Meetings.objects.select_related('idschedule').get(id=idMeeting)
+        context = {
+            "meeting": meeting
+        }
+        return render(request, 'pages/appointmentDetail.html', context)  # Trả lại template và dữ liệu cuộc họp
+    except Meetings.DoesNotExist:
+        return HttpResponse("Meeting not found")
+
+def proccessMeeting(request, meeting_id):
+    try:
+        action = request.POST["action-form-btn"]
+        reasonCancel = request.POST["reasonCancel"]
+        idMeeting = request.POST["idMeeting"]
+        if action: 
+            if action == 'Approve':
+                approveMeeting(meeting_id)
+                return redirect('/Doctor/appointment') 
+            elif action == 'Reject':
+                rejectMeeting(meeting_id)
+                return redirect('/Doctor/appointment') 
+            elif action == 'Cancel':
+                # print('cancel zo ne')
+                cancelMeeting(idMeeting, reasonCancel)
+                return redirect('/Doctor/appointment')
     except Exception as e:
         return HttpResponse(f"Error: {str(e)}")
 

@@ -14,13 +14,25 @@
 
 <body>
     <div class="top-container">
-        <form action="" method="post">
-            <input type="text" name="search" id="search" placeholder="Search:">
-            <button>Search</button>
-        </form>
+        <div style="width: 80%;">
+            <input type="text" name="search" id="search" placeholder="Search by patient's name:">
+            <button onclick="searchAndFilter()">Search</button>
+        </div>
+        <div class="status-filter">
+            <input type="radio" id="all" name="status-selected" value="all" checked>
+            <label for="all">All</label><br>
+            <input type="radio" id="active" name="status-selected" value="active">
+            <label for="active">Active</label><br>
+            <input type="radio" id="pending" name="status-selected" value="pending">
+            <label for="pending">Pending</label><br>
+            <input type="radio" id="rejected" name="status-selected" value="rejected">
+            <label for="rejected">Rejected</label><br>
+            <input type="radio" id="inactive" name="status-selected" value="inactive">
+            <label for="inactive">Inactive</label><br>
+        </div>
     </div>
     <div class="table-container">
-        <table>
+        <table id="meetingTable">
             <thead>
                 <tr>
                     <th></th>
@@ -30,15 +42,17 @@
                     <th>Status</th>
                     <th>Symptom</th>
                     <th>Cancel</th>
-                    <th>Action</th>
+                    <th style="width: 200px;">Action</th>
                 </tr>
             </thead>
             <tbody>
                 {% for meeting in meetings %}
-                <tr>
-                    <form action="" method="post">
+                <form action="{% url 'proccessMeeting' meeting.id%}" method="post">
+                    {% csrf_token %}
+                    <tr>
                         <td>{{ forloop.counter }}</td>
-                        <!-- <td>{{ meeting.id}}</td> -->
+                        <!-- <input type="hidden" id="idMeeting" name="idMeeting" value="{{meeting.id}}"> -->
+                        <!-- <input type="hidden" class="idMeeting" id="idMeeting{{ forloop.counter }}" name="idMeeting" value="{{meeting.id}}"> -->
                         <td>{{ meeting.idpatient__name }}</td>
                         <td>{{ meeting.idpatient__phonenumber }}</td>
                         <td>{{ meeting.idschedule__startshift }}</td>
@@ -57,45 +71,113 @@
                             {% else %}
                                 status-expired
                             {% endif %}">
-                            {{ meeting.status }}
-                        </p>
-                        
+                                {{ meeting.status }}
+                            </p>
                         </td>
                         <td>{{ meeting.symptom }}</td>
                         <td>{{ meeting.reason }}</td>
                         <td>
                             {% if meeting.idschedule__startshift > nowTime %}
-                                {% if meeting.status == 'Pending' %}
-                                <button type="submit" class="action-form-btn" name="action-form-btn" data-tooltip="Approve" value="Approve" data-meeting-id="{{ meeting.id }}" >
-                                    <i class="fa-solid fa-check"></i></button>
-                                <button type="submit" class="action-form-btn" name="action-form-btn" data-tooltip="Reject" value="Reject" data-meeting-id="{{ meeting.id }}">
-                                    <i class="fa-solid fa-xmark"></i></button>
-                                {% endif %}
-                                {% if meeting.status == 'Active' %}
-                                <button type="submit" class="action-form-btn" name="action-form-btn" data-tooltip="Cancel" value="Cancel" data-meeting-id="{{ meeting.id }}">
-                                    <i class="fa-solid fa-xmark"></i></button>
-                                {% endif %}                        
+                            {% if meeting.status == 'Pending' %}
+                            <button type="submit" class="action-form-btn" name="action-form-btn" data-tooltip="Approve"
+                                value="Approve" onclick="return confirmApprove()">
+                                <i class="fa-solid fa-check"></i></button>
+                            <button type="submit" class="action-form-btn" name="action-form-btn" data-tooltip="Reject"
+                                value="Reject" onclick="return confirmReject()">
+                                <i class="fa-solid fa-xmark"></i></button>
                             {% endif %}
-                            <button type="submit" class="action-form-btn" name="action-form-btn" data-tooltip="Info" value="Info" data-meeting-id="{{ meeting.id }}">
-                                <i class="fa-solid fa-info"></i></button>
+                            {% if meeting.status == 'Active' %}
+                            <button type="button" id="cancelBtn" data-tooltip="Cancel" data-idmeeting="{{meeting.id}}" onclick="openModalReason()">
+                                <i class="fa-solid fa-xmark"></i>
+                            </button>
+                            {% endif %}
+                            {% endif %}
+                            <button type="button" class="action-form-btn" data-tooltip="Info">
+                                <a href="{% url 'appointmentDetail' meeting.id %}">
+                                    <i class="fa-solid fa-info"></i>
+                                </a>
+                            </button>
                         </td>
-                    </form>
-                </tr>
+                        <div id="custom-confirm" class="modal">
+                            <div class="modal-content">
+                                <input type="hidden" id="idMeeting" name="idMeeting" >
+                                <i id="closeReasonForm" class="fa-solid fa-xmark"></i>
+                                <label>Please provide a reason for canceling this appointment:</label>
+                                <input type="text" name="reasonCancel" id="reasonCancel"
+                                    placeholder="Enter reason here...">
+                                <button type="submit" class="action-form-btn" id="confirmBtn" name="action-form-btn"
+                                    value="Cancel" onclick="return cancelMeeting()">Confirm</button>
+                            </div>
+                        </div>
+                    </tr>
+                </form>
                 {% endfor %}
             </tbody>
         </table>
-        <!-- <input type="hidden" id="csrf-token" value="{{ csrf_token }}"> -->
-        <!-- <script>
-            document.addEventListener('DOMContentLoaded', () => {
-                document.body.addEventListener('click', function (event) {
-                    if (event.target.closest('.action-form-btn') && event.target.closest('[data-tooltip="Approve"]')) {
-                        var button = event.target.closest('.action-form-btn');
-                        var meetingId = button.getAttribute('data-meeting-id');
-                        approveMeeting(meetingId);
+        <script>
+            function searchAndFilter() {
+                var input, filterName, status, table, tr, tdName, tdStatus, i, txtValueName, txtValueStatus;
+                input = document.getElementById("search");
+                filterName = input.value.toUpperCase();
+                status = document.querySelector('input[name="status-selected"]:checked').value;
+                table = document.getElementById("meetingTable");
+                tr = table.getElementsByTagName("tr");
+                for (i = 0; i < tr.length; i++) {
+                    tdName = tr[i].getElementsByTagName("td")[1]; // Lấy cột Patient name (index 1)
+                    tdStatus = tr[i].getElementsByTagName("td")[4]; // Lấy cột Status (index 4)
+                    if (tdName && tdStatus) {
+                        txtValueName = tdName.textContent || tdName.innerText;
+                        txtValueStatus = tdStatus.textContent || tdStatus.innerText;
+                        if (txtValueName.toUpperCase().indexOf(filterName) > -1 && (status === "all" || txtValueStatus.trim().toLowerCase() === status)) {
+                            tr[i].style.display = "";
+                        } else {
+                            tr[i].style.display = "none";
+                        }
                     }
-                });
+                }
+            }
+
+            // Gọi hàm searchAndFilter khi một nút radio được chọn hoặc khi nút Search được nhấn
+            document.querySelectorAll('input[name="status-selected"]').forEach(function (radio) {
+                radio.addEventListener('change', searchAndFilter);
             });
-        </script> -->
+            function confirmApprove() {
+                return confirm("Are you sure you want to approve this appointment?");
+            }
+            function confirmReject() {
+                return confirm("Are you sure you want to reject this appointment?");
+            }
+            function confirmCancel() {
+                return confirm("Are you sure you want to cancel this appointment?");
+            }
+
+            var modal = document.getElementById("custom-confirm");
+            var span = document.getElementById("closeReasonForm");
+
+            function openModalReason() {
+                var idmeeting = event.currentTarget.getAttribute("data-idmeeting");
+                document.getElementById("idMeeting").value = idmeeting
+                modal.style.display = "block";
+            }
+            span.onclick = function () {
+                modal.style.display = "none";
+            }
+            window.onclick = function (event) {
+                if (event.target == modal) {
+                    modal.style.display = "none";
+                }
+            }
+            function cancelMeeting() {
+                var reason = document.getElementById("reasonCancel").value;
+                if (reason.trim() !== "") {
+                    modal.style.display = "none";
+                    return confirmCancel();
+                } else {
+                    alert("Please provide a reason!");
+                    return false;
+                }
+            }
+        </script>
     </div>
 </body>
 
