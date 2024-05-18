@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+{% load static %}
+<style>
+    .intro{
+        padding: 5px;
+        padding-left: 20px;
+        background-color: #42AEB1;
+        border-radius: 5px;
+        margin: 30px;
+    }
+    p, h1, h2, h3, h4, h5, h6 {
+        font-family: 'Roboto', sans-serif;
+    }
+    .box{
+        background-color:#F4F4F4; 
+        margin: 20px; 
+        box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2); 
+        border-radius: 5px;
+        flex: 0 1 calc(25% - 10px); 
+        margin: 5px;
+    }
+    .box:hover {
+        background-color: #A2BEC1; 
+        cursor: pointer;
+    }
+    .box.clicked {
+        background-color: #A2BEC1;
+    }
+    .imgIntroPatient{
+        width: 80px;
+        height: auto;
+    }
+    .submitForm{
+        margin-left: 25px;
+        margin-top: 30px;
+        border: none; 
+        background-color: #42AEB1; 
+        border-radius: 10px; 
+        width: 20%; 
+        height: 50px; 
+        font-size: 20px; 
+        font-family: 'Roboto', sans-serif; 
+        color: #ffffff;
+    }
+    .submitForm:hover {
+        background-color: #A2BEC1; 
+        cursor: pointer;
+    }
+    #showDrInfo {
+        display: none;
+    }
+    #showDrInfo.visible {
+        display: block;
+        background-color: #42AEB1; 
+        width: 30%; 
+        padding-left: 25px; 
+        color: #ffffff; 
+        border-radius: 5px; 
+        margin-left: 10px; 
+        margin-right: 25px;
+    }
+</style>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var boxes = document.querySelectorAll(".box");
+
+        boxes.forEach(function(box) {
+            box.addEventListener("click", function() {
+                boxes.forEach(function(b) {
+                    b.classList.remove("clicked");
+                });
+                this.classList.add("clicked");
+                // Lấy giá trị ID của div box được click
+                var meetigId = this.id;
+
+                // Cập nhật giá trị của trường input ẩn
+                document.getElementById("idMeetingInput").value = meetigId;
+            });
+        });
+    });
+    function validateForm() {
+        var idSchedule = document.getElementById("idMeetingInput").value;
+        
+        if (!idSchedule) {
+            alert("Please choose 1 appointment to cancel.");
+            return false; // Ngăn form được gửi đi nếu có trường trống
+        }
+        return true;
+    }
+</script>
+
+<div class="intro">
+    <h2 style="color: #185C79; margin-left: 10px; margin-bottom: 0px;">Hi, {{ name }}</h2>
+    <div style="display: flex; padding: 10px;">
+        <p style="width: 70%; color: #ffffff; font-size: 28px; padding-right: 50px; text-align: justify;">
+            We use the latest technology and techniques to provide the most effective care possible, and we are dedicated to helping you achieve optimal oral health. With our customized treatment plans, you can enjoy a healthy, beautiful smile for life.
+        </p>
+        <!-- <img class="imgIntroPatient" src="../static/images/imgIntroPatient.png" alt="ToothCareimgIntroPatient"> -->
+        <img style="width: 30%;" class="imgIntroPatient" src="{% static 'images/imgIntroPatient.png' %}" alt="ToothCareimgIntroPatient">
+    </div>
+</div>
+
+<div style="display: flex; width: 100%;">
+<form action="{% url 'CancelHistoryAppointment'%}" method="post" style="padding-left: 10px; width: 70%;">
+    {% csrf_token %}
+    <div class="divTittle" style="display: flex; margin-left: 25px; height: 40px; margin-bottom: 25px;">
+        <div style="background-color: #4FA5A8; height: auto; width: 10px; margin-right: 10px;"></div>
+        <h3 style="color: #4FA5A8; margin: 10px;">Your Appointment</h3>
+    </div>
+    <div name="SchedulesPart" style="display: flex; flex-wrap: wrap; margin-bottom: 20px; padding-left: 25px;">
+        {% for meeting in meetings %}
+            <div class="box" id="{{ meeting.id }}">
+                <p style="font-size: 16px; margin: 30px 20px 10px 20px">{{ meeting.idschedule.formatted_startshift }}</p>
+                <h4 style="margin-left: 20px; margin-bottom: 40px;">{{meeting.symptom}}</h4>
+            </div>
+        {% endfor %}
+    </div>
+    <input type="text" name="idMeeting" id="idMeetingInput" hidden>
+    <input type="submit" class="submitForm" value="Cancel Appointment" onclick="return validateForm();">
+</form>
+</div>
+{% endblock content %}

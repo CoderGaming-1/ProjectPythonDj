@@ -8,7 +8,7 @@
         padding: 5px;
         padding-left: 20px;
         background-color: #42AEB1;
-        border-radius: 8px;
+        border-radius: 5px;
         margin: 30px;
     }
     p, h1, h2, h3, h4, h5, h6 {
@@ -49,11 +49,25 @@
         background-color: #A2BEC1; 
         cursor: pointer;
     }
+    #showDrInfo {
+        display: none;
+    }
+    #showDrInfo.visible {
+        display: block;
+        background-color: #42AEB1; 
+        width: 30%; 
+        padding-left: 25px; 
+        color: #ffffff; 
+        border-radius: 5px; 
+        margin-left: 10px; 
+        margin-right: 25px;
+    }
 </style>
 
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         var boxes = document.querySelectorAll(".box");
+        var showDrInfoDiv = document.getElementById("showDrInfo");
 
         boxes.forEach(function(box) {
             box.addEventListener("click", function() {
@@ -66,7 +80,7 @@
 
                 // Cập nhật giá trị của trường input ẩn
                 document.getElementById("idScheduleInput").value = scheduleId;
-
+                debugger
                 // Lấy info bác sĩ từ thuộc tính data-
                 var doctorName = this.getAttribute("data-name");
                 var phone = this.getAttribute("data-phone");
@@ -79,9 +93,11 @@
                 document.getElementById("name").textContent = doctorName;
                 document.getElementById("phone").textContent = phone;
                 document.getElementById("graduation").textContent = graduation;
-                document.getElementById("gender").textContent = gender;
-                document.getElementById("birth").textContent = birth;
+                document.getElementById("gender").textContent = gender == "True" ? "Nu" : "Nam";
+                document.getElementById("birth").textContent = birth.split(',')[0] + birth.split(',')[1];
                 document.getElementById("nation").textContent = nation;
+
+                showDrInfoDiv.classList.add("visible");
             });
         });
     });
@@ -96,23 +112,40 @@
         }
         return true;
     }
+    function formatDate(inputDate) {
+        // Chuyển chuỗi đầu vào thành đối tượng Date
+        const date = new Date(inputDate);
+        
+        // Định dạng tháng thành dạng ngắn (3 chữ cái)
+        const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        const month = months[date.getMonth()];
+        
+        // Lấy các thành phần ngày, năm, giờ và phút
+        const day = String(date.getDate()).padStart(2, '0');
+        const year = date.getFullYear();
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        
+        // Định dạng lại chuỗi ngày theo yêu cầu
+        return `${month} ${day}, ${year}, ${hours}:${minutes}`;
+    }
 </script>
 
 <div class="intro">
-    <h2>Hi, {{ name }}</h2>
+    <h2 style="color: #185C79; margin-left: 10px; margin-bottom: 0px;">Hi, {{ name }}</h2>
     <div style="display: flex; padding: 10px;">
-        <p>
+        <p style="width: 70%; color: #ffffff; font-size: 28px; padding-right: 50px; text-align: justify;">
             We use the latest technology and techniques to provide the most effective care possible, and we are dedicated to helping you achieve optimal oral health. With our customized treatment plans, you can enjoy a healthy, beautiful smile for life.
         </p>
         <!-- <img class="imgIntroPatient" src="../static/images/imgIntroPatient.png" alt="ToothCareimgIntroPatient"> -->
-        <img class="imgIntroPatient" src="C:/D/Study/StudyPython/BT_CK/ProjectPythonDj/Patient/static/images/imgIntroPatient.png" alt="ToothCareimgIntroPatient">
+        <img style="width: 30%;" class="imgIntroPatient" src="{% static 'images/imgIntroPatient.png' %}" alt="ToothCareimgIntroPatient">
     </div>
 </div>
 
 <div style="display: flex; width: 100%;">
 <form action="{% url 'PostBookAppointment'%}" method="post" style="padding-left: 10px; width: 70%;">
     {% csrf_token %}
-    <div class="divTittle" style="display: flex; margin-left: 25px; height: 40px;">
+    <div class="divTittle" style="display: flex; margin-left: 25px; height: 40px; margin-bottom: 25px;">
         <div style="background-color: #4FA5A8; height: auto; width: 10px; margin-right: 10px;"></div>
         <h3 style="color: #4FA5A8; margin: 10px;">Choose Schedule</h3>
     </div>
@@ -125,7 +158,7 @@
             data-gender="{{ schedule.iduser.gender }}"
             data-birth="{{ schedule.iduser.birth }}"
             data-nation="{{ schedule.iduser.nation }}">
-                <p style="font-size: 16px; margin: 30px 20px 10px 20px">{{schedule.startshift}}</p>
+                <p style="font-size: 16px; margin: 30px 20px 10px 20px">{{ schedule.formatted_startshift }}</p>
                 <h4 style="margin-left: 20px; margin-bottom: 40px;">{{schedule.iduser.name}}</h4>
             </div>
         {% endfor %}
@@ -135,14 +168,14 @@
         <div style="background-color: #4FA5A8; height: auto; width: 10px; margin-right: 10px;"></div>
         <h3 style="color: #4FA5A8; margin: 10px;">Symptom</h3>
     </div>
-    <textarea style="margin-left: 25px; margin-top: 20px; border-color: #42AEB1; border-radius: 10px; width: 80%; font-size: 18px; font-family: 'Roboto', sans-serif;" name="symptom" cols="10" rows="5"></textarea>
+    <textarea style="margin-left: 25px; margin-top: 20px; border-color: #42AEB1; border-radius: 10px; width: 80%; font-size: 18px; font-family: 'Roboto', sans-serif; padding: 15px;" name="symptom" cols="10" rows="5"></textarea>
     <br>
     <input type="text" name="idSchedule" id="idScheduleInput" hidden>
     <input type="text" name="idPatient" value="{{ idPatient }}" hidden>
     <input type="submit" class="submitForm" name="Book Appointment" onclick="return validateForm();">
 </form>
 
-<div style="background-color: #42AEB1; width: 30%; padding-left: 25px; color: #ffffff; border-radius: 5px; margin-left: 10px;">
+<div id="showDrInfo" >
     <h5>Name</h5>
     <p id="name"></p>
     <h5>Phone Number</h5>
