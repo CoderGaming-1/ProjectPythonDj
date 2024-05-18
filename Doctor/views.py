@@ -14,6 +14,8 @@ from django.core.serializers.json import DjangoJSONEncoder
 from django.http import JsonResponse
 from django.db.models import Prefetch
 # from django.views.decorators.csrf import csrf_exempt
+import pytz
+
 
 
 def index(request):
@@ -40,7 +42,8 @@ def schedule(request):
     # return render(request, 'pages/schedule.html', context)
 
     # Bo new code
-
+    # Lấy múi giờ UTC
+    utc = pytz.utc
     iduser = 4
     # Truy vấn bảng Schedules và prefetch các liên kết cần thiết
     # schedules = Schedules.objects.filter(iduser__id=iduser).select_related('iduser').prefetch_related(
@@ -54,6 +57,13 @@ def schedule(request):
 
     for schedule in schedules:
         meeting = schedule.meetings_set.first()
+
+        # Chuyển đổi startshift sang UTC+0
+        startshift_aware = schedule.startshift
+        if startshift_aware.tzinfo is None or startshift_aware.tzinfo.utcoffset(startshift_aware) is None:
+            startshift_aware = timezone.make_aware(startshift_aware)
+        startshift_utc = startshift_aware.astimezone(utc)
+
         if meeting:
             patient = meeting.idpatient
             medical_record = patient.medicalrecords_set.first() 
@@ -64,7 +74,7 @@ def schedule(request):
 
             schedule_info = {
                 'status': schedule.status,
-                'startshift': schedule.startshift,
+                'startshift': startshift_utc, #schedule.startshift,
                 'namepatient': patient.name,
                 'bloodtype': bloodtype,
                 'allergy': allergy,
@@ -74,7 +84,7 @@ def schedule(request):
         else:
             schedule_info = {
                 'status': schedule.status,
-                'startshift': schedule.startshift,
+                'startshift': startshift_utc, #schedule.startshift,
                 'namepatient': '',
                 'bloodtype': '',
                 'allergy': '',
@@ -164,12 +174,18 @@ def createSchedule(request):
     
 def getScheduleByStatusTime(idDoctor, status, schedule_time_str):
     try:
+        utc = pytz.utc
         schedule_time = datetime.strptime(schedule_time_str, '%Y-%m-%d %H:%M:%S.%f')
+        
         
         if schedule_time.tzinfo is None or schedule_time.tzinfo.utcoffset(schedule_time) is None:
             schedule_time = timezone.make_aware(schedule_time)
-
-        schedule = Schedules.objects.filter(iduser__id=idDoctor, status=status, startshift=schedule_time).order_by('-id').first()
+        schedule_time_utc = schedule_time.astimezone(utc)
+        # Thêm số giờ vào schedule_time (ví dụ: thêm 3 giờ)
+        hours_to_add = 7
+        schedule_time_utc = schedule_time_utc + timedelta(hours=hours_to_add)
+        # return HttpResponse(str(idDoctor) + ' ' + str(status) + ' ' + str(schedule_time_utc))
+        schedule = Schedules.objects.filter(iduser__id=idDoctor, status=status, startshift=schedule_time_utc).order_by('-id').first()
         
         if schedule:
             return schedule.id
