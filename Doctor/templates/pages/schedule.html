@@ -1,0 +1,186 @@
+{% load static %}
+{% include "base/header.html" %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schedule</title>
+    <link rel="stylesheet" href="{% static 'css/scheduleMonth.css' %}">
+</head>
+
+<body>
+    <div class="container">
+        <div class="status-list">
+            <div class="status-item">
+                <div class="status-color expired"></div>
+                <span class="status-label">Expired</span>
+            </div>
+            <div class="status-item">
+                <div class="status-color enable"></div>
+                <span class="status-label">Enable</span>
+            </div>
+            <div class="status-item">
+                <div class="status-color active"></div>
+                <span class="status-label">Active</span>
+            </div>
+            <div class="status-item">
+                <div class="status-color booked"></div>
+                <span class="status-label">Booked</span>
+            </div>
+        </div>
+
+        <div class="wrapper">
+            <div id="header">
+                <button id="todayButton">Today</i></button>
+                <button id="backButton"><i class="fa-solid fa-chevron-left"></i></button>
+                <button id="nextButton"><i class="fa-solid fa-chevron-right"></i></button>
+                <div id="monthDisplay"></div>
+                <div id="mode-selected">
+                    <select id="monthSelect">
+                        <option value="Month">Month</option>
+                        <option value="Day">Day</option>
+                    </select>
+                </div>
+            </div>
+            <div id="weekdays">
+                <div>Sunday</div>
+                <div>Monday</div>
+                <div>Tuesday</div>
+                <div>Wednesday</div>
+                <div>Thursday</div>
+                <div>Friday</div>
+                <div>Saturday</div>
+            </div>
+
+            <div id="calendar"></div>
+        </div>
+
+
+
+        <div id="modalBackDrop">
+            <div id="newEventModal">
+                <form action="{% url 'createSchedule'%}" method="post">
+                    {% csrf_token %}
+                    <h2 class="titleModal">Form open schedule</h2>
+                    <div class="scheduleForm">
+                        <h3>Start: </h3>
+                        <input name="startShift" class="datetimePicker" id="startPicker" type="datetime-local" step="3600" />
+
+                        <h3>End: </h3>
+                        <input name="endShift" class="datetimePicker" id="endPicker" type="datetime-local" step="60" />
+
+                        <div class="buttonModal">
+                            <button type="button" id="cancelButton">Cancel</button>
+                            <!-- <button type="submit" id="saveButton">Save</button> -->
+                            <button type="submit" id="saveButton">Save</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div>
+
+    <div id="container-meeting-info">
+        <div class="meeting-info">
+            <div class="title">
+               <h2 style="font-size: 16px; margin-left: 20px;">Appointment Detail</h2> 
+               <i id="closeMeetingButton" class="fa-solid fa-xmark"></i>
+            </div>
+            <div class="main-meeting">
+                <div id="left-info">
+                    <h3>Appointment's information: </h3>
+                    <form action="{% url 'deleteSchedule'%}" method="post" onsubmit="return confirmDelete();">
+                        {% csrf_token %}
+                        <div class="row">
+                            <label>Shift: </label>
+                            <input type="text" name="shift" id="shift" readonly> 
+                            <input type="text" name="idDoctor" id="idDoctor" value="{{ iduser }}" style="display: none;">                       
+                        </div>
+                        <div class="row">
+                            <label>Status: </label>
+                            <input type="text" name="status" id="status" readonly>                        
+                        </div>
+                        <button type="submit" id="cancelButtonAppointment">Delete</button>                        
+                    </form>
+                </div>
+                <div id="right-info">
+                    <h3>Patient's information: </h3>
+                    <div class="row">
+                        <label>Name: </label>
+                        <input type="text" name="namePatient" id="namePatient" readonly>                        
+                    </div>
+                    <div class="row">
+                        <label>Blood type: </label>
+                        <input type="text" name="bloodType" id="bloodType" readonly>                        
+                    </div>
+                    <div class="row">
+                        <label>Allergy: </label>
+                        <input type="text" name="allergy" id="allergy" readonly>                        
+                    </div>
+                    <div class="row">
+                        <label>Symptom: </label>
+                        <input type="text" name="symptom" id="symptom"  readonly>                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const schedules = JSON.parse('{{ schedules_json|escapejs|safe }}');
+    </script>
+    <script>
+        function validateForm() {
+            var startShift = document.querySelector("input[name='startShift']").value;
+            var endShift = document.querySelector("input[name='endShift']").value;
+
+            if (!startShift || !endShift) {
+                alert("Please fill in both start and end times.");
+                return false;
+            }
+
+            var startTime = new Date(startShift);
+            var endTime = new Date(endShift);
+            var now = new Date();
+
+            if (startTime >= endTime) {
+                alert("Start time cannot be later than or equal to end time!");
+                return false;
+            }
+
+            if (startTime < now) {
+                alert("Start time cannot be in the past!");
+                return false;
+            }
+
+            if (endTime < now) {
+                alert("End time cannot be in the past!");
+                return false;
+            }
+
+            var startHour = startTime.getHours();
+            var endHour = endTime.getHours();
+
+            if (startHour < 7 || startHour > 19) {
+                alert("Start time is outside of working hours (7:00 to 19:00)!");
+                return false;
+            }
+
+            if (endHour < 7 || endHour > 19) {
+                alert("End time is outside of working hours (7:00 to 19:00)!");
+                return false;
+            }
+            
+            return true;
+        }
+        function confirmDelete() {
+            return confirm("Are you sure you want to delete this schedule?");
+        }
+    </script>
+    <script src="{% static 'js/scheduleMonth.js' %}"></script>
+</body>
+
+</html>

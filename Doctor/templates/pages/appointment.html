@@ -1,0 +1,102 @@
+{% load static %}
+{% include "base/header.html" %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="{% static 'css/meetingsStyle.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+
+<body>
+    <div class="top-container">
+        <form action="" method="post">
+            <input type="text" name="search" id="search" placeholder="Search:">
+            <button>Search</button>
+        </form>
+    </div>
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Patient name</th>
+                    <th>Patient number</th>
+                    <th>Shift time</th>
+                    <th>Status</th>
+                    <th>Symptom</th>
+                    <th>Cancel</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for meeting in meetings %}
+                <tr>
+                    <form action="" method="post">
+                        <td>{{ forloop.counter }}</td>
+                        <!-- <td>{{ meeting.id}}</td> -->
+                        <td>{{ meeting.idpatient__name }}</td>
+                        <td>{{ meeting.idpatient__phonenumber }}</td>
+                        <td>{{ meeting.idschedule__startshift }}</td>
+                        <td>
+                            <p class="status-meeting 
+                            {% if meeting.idschedule__startshift > nowTime %}                
+                                {% if meeting.status == 'Pending' %}
+                                    status-pending
+                                {% elif meeting.status == 'Active' %}
+                                    status-active
+                                {% elif meeting.status == 'Rejected' %}
+                                    status-rejected
+                                {% elif meeting.status == 'Inactive' %}
+                                    status-inactive
+                                {% endif %}
+                            {% else %}
+                                status-expired
+                            {% endif %}">
+                            {{ meeting.status }}
+                        </p>
+                        
+                        </td>
+                        <td>{{ meeting.symptom }}</td>
+                        <td>{{ meeting.reason }}</td>
+                        <td>
+                            {% if meeting.idschedule__startshift > nowTime %}
+                                {% if meeting.status == 'Pending' %}
+                                <button type="submit" class="action-form-btn" name="action-form-btn" data-tooltip="Approve" value="Approve" data-meeting-id="{{ meeting.id }}" >
+                                    <i class="fa-solid fa-check"></i></button>
+                                <button type="submit" class="action-form-btn" name="action-form-btn" data-tooltip="Reject" value="Reject" data-meeting-id="{{ meeting.id }}">
+                                    <i class="fa-solid fa-xmark"></i></button>
+                                {% endif %}
+                                {% if meeting.status == 'Active' %}
+                                <button type="submit" class="action-form-btn" name="action-form-btn" data-tooltip="Cancel" value="Cancel" data-meeting-id="{{ meeting.id }}">
+                                    <i class="fa-solid fa-xmark"></i></button>
+                                {% endif %}                        
+                            {% endif %}
+                            <button type="submit" class="action-form-btn" name="action-form-btn" data-tooltip="Info" value="Info" data-meeting-id="{{ meeting.id }}">
+                                <i class="fa-solid fa-info"></i></button>
+                        </td>
+                    </form>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <!-- <input type="hidden" id="csrf-token" value="{{ csrf_token }}"> -->
+        <!-- <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                document.body.addEventListener('click', function (event) {
+                    if (event.target.closest('.action-form-btn') && event.target.closest('[data-tooltip="Approve"]')) {
+                        var button = event.target.closest('.action-form-btn');
+                        var meetingId = button.getAttribute('data-meeting-id');
+                        approveMeeting(meetingId);
+                    }
+                });
+            });
+        </script> -->
+    </div>
+</body>
+
+</html>
