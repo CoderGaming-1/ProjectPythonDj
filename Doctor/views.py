@@ -12,6 +12,7 @@ from django.utils import timezone
 from django.core.serializers import serialize
 from django.core.serializers.json import DjangoJSONEncoder
 from django.http import JsonResponse
+from django.db.models import Prefetch
 # from django.views.decorators.csrf import csrf_exempt
 
 
@@ -25,17 +26,71 @@ class DateTimeEncoder(DjangoJSONEncoder):
         return super().default(obj)
 
 def schedule(request):
+    # iduser = 4
+    # schedules = Schedules.objects.filter(iduser__id=iduser).select_related('iduser')
+    # # schedule_test_json = json.dumps(schedules, cls=DateTimeEncoder)
+    
+    # schedules_list = list(schedules.values('status', 'startshift'))
+    # schedules_json = json.dumps(schedules_list, cls=DateTimeEncoder)
+    # #return HttpResponse(schedules_json)
+    # context = { "iduser": iduser,
+    #             "schedules": schedules, 
+    #             "schedules_json": schedules_json,
+    #            }
+    # return render(request, 'pages/schedule.html', context)
+
+    # Bo new code
+
     iduser = 4
-    schedules = Schedules.objects.filter(iduser__id=iduser).select_related('iduser')
-    schedules_list = list(schedules.values('status', 'startshift'))
+    # Truy vấn bảng Schedules và prefetch các liên kết cần thiết
+    # schedules = Schedules.objects.filter(iduser__id=iduser).select_related('iduser').prefetch_related(
+    #     Prefetch('meetings_set', queryset=Meetings.objects.select_related('idpatient__medicalrecords'))
+    # )
+    schedules = Schedules.objects.filter(iduser__id=iduser).select_related('iduser').prefetch_related(
+        Prefetch('meetings_set', queryset=Meetings.objects.select_related('idpatient').prefetch_related('idpatient__medicalrecords_set'))
+    )
+
+    schedules_list = []
+
+    for schedule in schedules:
+        meeting = schedule.meetings_set.first()
+        if meeting:
+            patient = meeting.idpatient
+            medical_record = patient.medicalrecords_set.first() 
+
+            # Kiểm tra nếu medical_record tồn tại
+            allergy = medical_record.allergy if medical_record else None
+            bloodtype = medical_record.bloodtype if medical_record else None
+
+            schedule_info = {
+                'status': schedule.status,
+                'startshift': schedule.startshift,
+                'namepatient': patient.name,
+                'bloodtype': bloodtype,
+                'allergy': allergy,
+                'symptom': meeting.symptom,
+            }
+            schedules_list.append(schedule_info)
+        else:
+            schedule_info = {
+                'status': schedule.status,
+                'startshift': schedule.startshift,
+                'namepatient': '',
+                'bloodtype': '',
+                'allergy': '',
+                'symptom': '',
+            }
+            schedules_list.append(schedule_info)
+    
     schedules_json = json.dumps(schedules_list, cls=DateTimeEncoder)
+    # return HttpResponse(schedules_json)
     context = { "iduser": iduser,
                 "schedules": schedules, 
                 "schedules_json": schedules_json,
                }
     return render(request, 'pages/schedule.html', context)
 
-# def createSchedule(request):
+def createSchedule(request):
     try:
         iduser = 4
         startShift = request.POST["startShift"]

@@ -281,6 +281,7 @@ button {
     border-bottom: 1px solid var(--underline-text-color);
     height: 30px;
     width: 60%;
+    text-align: left;
     cursor: default;
 }
 #right-info input{

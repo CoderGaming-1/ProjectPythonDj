@@ -50,12 +50,18 @@ function saveEvent() {
   closeModal();
 }
 
-function openMeetingDetail(time, status) {
+function openMeetingDetail(time, status, NamePatient,BloodType, Allergy, Symptom) {
   container_meeting_info.style.display = 'flex';
   const right_info = document.getElementById('right-info');
   const cancelButtonAppointment = document.getElementById('cancelButtonAppointment');
 
-  document.getElementById('shift').value = time.toString().slice(0, -26);;
+  document.getElementById('shift').value = time.toString().slice(0, -26);
+
+  document.getElementById('namePatient').value = NamePatient;
+  document.getElementById('bloodType').value = BloodType;
+  document.getElementById('allergy').value = Allergy;
+  document.getElementById('symptom').value = Symptom;
+
   if(status === 1){
     right_info.style.display = 'none';
     document.getElementById('status').value = 'Active'
@@ -64,21 +70,21 @@ function openMeetingDetail(time, status) {
     right_info.style.display = 'block';
     document.getElementById('status').value = 'Booked'
     cancelButtonAppointment.style.display = 'none'
-    const xhr = new XMLHttpRequest();
+    // const xhr = new XMLHttpRequest();
 
-    xhr.open('POST', '/path/to/getMeetingByIdSchedule/', true);
-    xhr.setRequestHeader('Content-Type', 'application/json');
-    xhr.onreadystatechange = function() {
-      if (xhr.readyState === XMLHttpRequest.DONE) {
-        if (xhr.status === 200) {
-          console.log(xhr.responseText);
-        } else {
-          console.error('Có lỗi xảy ra:', xhr.statusText);
-        }
-      }
-    };
-    const data = JSON.stringify({idDoctor: document.getElementById('idDoctor').value, time: document.getElementById('shift').value, status: status});
-    xhr.send(data);
+    // xhr.open('POST', '/path/to/getMeetingByIdSchedule/', true);
+    // xhr.setRequestHeader('Content-Type', 'application/json');
+    // xhr.onreadystatechange = function() {
+    //   if (xhr.readyState === XMLHttpRequest.DONE) {
+    //     if (xhr.status === 200) {
+    //       console.log(xhr.responseText);
+    //     } else {
+    //       console.error('Có lỗi xảy ra:', xhr.statusText);
+    //     }
+    //   }
+    // };
+    // const data = JSON.stringify({idDoctor: document.getElementById('idDoctor').value, time: document.getElementById('shift').value, status: status});
+    // xhr.send(data);
   }
   window.scrollTo(0,document.body.scrollHeight);
 }
@@ -125,16 +131,27 @@ function loadDayView(date) {
           for (const schedule of schedules) {
             const startShift = new Date(schedule.startshift).toISOString().slice(0, -1);
             const newStartShift = new Date(startShift)
+            debugger
             if (timeSlotDate.getTime() === newStartShift.getTime()) {
+              
               if (schedule.status === 1) {
                 timeSlot.classList.add('active');
               }
               else if (schedule.status === 2) {
                 timeSlot.classList.add('booked');
               }
+              timeSlot.setAttribute('data-NamePatient', schedule.namepatient || '');
+              timeSlot.setAttribute('data-BloodType', schedule.bloodtype || '');
+              timeSlot.setAttribute('data-Allergy', schedule.allergy || '');
+              timeSlot.setAttribute('data-Symptom', schedule.symptom || '');
+
               timeSlot.addEventListener('click', () => {
                 // console.log('dateeeeeee: ' + timeSlotDate);
-                openMeetingDetail(timeSlotDate, schedule.status);
+                var NamePatient = event.currentTarget.getAttribute("data-NamePatient");
+                var BloodType = event.currentTarget.getAttribute("data-BloodType");
+                var Allergy = event.currentTarget.getAttribute("data-Allergy");
+                var Symptom = event.currentTarget.getAttribute("data-Symptom");
+                openMeetingDetail(timeSlotDate, schedule.status, NamePatient,BloodType, Allergy, Symptom);
               });
             }
           }
