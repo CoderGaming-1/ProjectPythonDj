@@ -140,6 +140,3 @@ EMAIL_HOST_PASSWORD = 'rosc pqby lirr hmwz'  # Replace with your Gmail password 
 # EMAIL_USE_SSL = True
 EMAIL_USE_TLS = True
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-ALLOWED_HOSTS = []
-
-
