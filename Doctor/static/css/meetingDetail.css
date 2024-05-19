@@ -1,0 +1,94 @@
+@import url(https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap);
+:root {
+    --light-background-color: #F7F9FC;
+    --main-color: #A2BEC1;
+    --strong-main-color: #42AEB1;
+    --grey-button-color: #828C8D;
+    --booked-schedule-color: #FEB3B0;
+    --hover-main-color: rgba(162, 190, 193, 0.28);
+    --underline-text-color: #202A2C;
+    --pending-button-color: #fff0c2;
+    --pending-font-color: #a68b00;
+    --active-button-color: #c8e6c9;
+    --active-font-color: #388e3c;
+    --rejected-button-color: #ffcdd2;
+    --rejected-font-color: #c62828;
+    --inactive-button-color: #bed0d2;
+    --inactive-font-color: #505758;
+    --expired-button-color: #bed0d2;
+    --expired-font-color: #505758;
+    --child-row-color: #def3f67e;
+}
+
+::-webkit-scrollbar {
+    display: none;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    font-size: 80%;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+h2{
+    margin: 20px 60px;
+}
+.container{
+    margin: 20px 50px;
+    display: flex;
+    flex-direction: column;
+}
+
+.wrapper-meeting{
+    display: flex;
+    flex-direction: row;
+    font-size: 16px;
+    border-radius: 8px;
+    border: 1px solid var(--inactive-font-color);
+    box-shadow: 2px 3px 7px rgba(0, 0, 0, 0.36);
+}
+.left-side, .right-side{
+    width: 48%;
+    padding: 0 10px;
+    margin: 10px 20px 30px 20px;
+    /* background-color: var(--strong-main-color); */
+}
+.row-field{
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    align-items: center;
+    font-weight: bold;
+    font-size: 18px;
+}
+.row-field h2{
+    font-size: 20px;
+    margin: 0;
+    padding: 10px 0;
+    color: var(--strong-main-color);
+    width: 100%;
+}
+.left-side .row-field label{
+    width: 240px;
+    padding: 16px 10px 4px 0;
+}
+.right-side .row-field label{
+    width: 150px;
+    padding: 16px 10px 4px 0;
+}
+.row-field h3{
+    width: 70%;
+    padding: 16px 10px 4px 0;
+    border-bottom: 1px solid var(--underline-text-color);
+    font-weight: normal;
+    font-size: 16px;
+}

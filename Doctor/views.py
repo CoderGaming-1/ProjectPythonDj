@@ -1,31 +1,27 @@
 from django.shortcuts import render
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import redirect
 from django.http import HttpResponse
-from django.core.exceptions import ObjectDoesNotExist
 from django.utils import timezone
-from .models import Roles, Users, Accounts, Schedules, Meetings
-import json
-import logging
-import datetime as dt
-from datetime import datetime, timedelta, time
-from django.utils import timezone
-from django.core.serializers import serialize
 from django.core.serializers.json import DjangoJSONEncoder
 from django.http import JsonResponse
 from django.db.models import Prefetch
-# from django.views.decorators.csrf import csrf_exempt
+
+from .models import Roles, Users, Accounts, Schedules, Meetings, Medicalrecords
+import json
+import logging
 import pytz
-
-
-
-def index(request):
-    return render(request, 'pages/home.html')
+import datetime as dt
+from datetime import datetime, timedelta, time
 
 class DateTimeEncoder(DjangoJSONEncoder):
     def default(self, obj):
         if isinstance(obj, dt.datetime):
             return obj.isoformat()
         return super().default(obj)
+logger = logging.getLogger(__name__)
+
+def index(request):
+    return render(request, 'pages/home.html')
 
 def schedule(request):
     # iduser = 4
@@ -129,7 +125,6 @@ def createSchedule(request):
         # return JsonResponse({'status': 'success'})
     except Exception as e:
         return HttpResponse(f'Error: {str(e)}')
-logger = logging.getLogger(__name__)
 
 def createSchedule(request):
     try:
@@ -236,7 +231,6 @@ def deleteSchedule(request):
     except Exception as e:
         return HttpResponse(f"Error: {str(e)}")
     
-
 def getMeetingByIdSchedule(request):
     if request.method == 'POST':
         try:
@@ -284,9 +278,12 @@ def appointment(request):
         'reason',
         ))
     
-    now = timezone.localtime(timezone.now())
+    now = datetime.now()
+    print('now: ', now)
     for meeting in meetings_list:
-        meeting['idschedule__startshift'] = timezone.localtime(meeting['idschedule__startshift'])
+        # meeting['idschedule__startshift'] = timezone.localtime(meeting['idschedule__startshift'], timezone=pytz.UTC)
+        # meeting['idschedule__startshift'] = meeting['idschedule__startshift'].astimezone(timezone.get_current_timezone())
+        meeting['idschedule__startshift'] = meeting['idschedule__startshift'].replace(tzinfo=None)
         meeting['status'] = STATUS_MAP.get(meeting['status'], 'Unknown')
     context = {
         "iduser": iduser,
@@ -294,6 +291,7 @@ def appointment(request):
         "nowTime": now,
     }
     return render(request, 'pages/appointment.html', context)
+
 def approveMeeting(idMeeting):
     try:
         meeting = Meetings.objects.select_related('idschedule').get(id=idMeeting)
@@ -330,16 +328,6 @@ def cancelMeeting(idMeeting, reasonCancel):
     except Meetings.DoesNotExist:
         return False
 
-def appointmentDetail(request, idMeeting):
-    try:
-        meeting = Meetings.objects.select_related('idschedule').get(id=idMeeting)
-        context = {
-            "meeting": meeting
-        }
-        return render(request, 'pages/appointmentDetail.html', context)  # Trả lại template và dữ liệu cuộc họp
-    except Meetings.DoesNotExist:
-        return HttpResponse("Meeting not found")
-
 def proccessMeeting(request, meeting_id):
     try:
         action = request.POST["action-form-btn"]
@@ -353,10 +341,33 @@ def proccessMeeting(request, meeting_id):
                 rejectMeeting(meeting_id)
                 return redirect('/Doctor/appointment') 
             elif action == 'Cancel':
-                # print('cancel zo ne')
                 cancelMeeting(idMeeting, reasonCancel)
                 return redirect('/Doctor/appointment')
     except Exception as e:
         return HttpResponse(f"Error: {str(e)}")
+
+def appointmentDetail(request, idMeeting):
+    try:
+        meeting = Meetings.objects.select_related(
+            'idpatient',
+            'idschedule'
+        ).get(id=idMeeting)
+
+        doctor_id = meeting.idschedule.iduser_id
+        doctor = Users.objects.get(id=doctor_id)
+
+        medical_record = Medicalrecords.objects.filter(iduser__id=meeting.idpatient.id).first()
+        
+        context = {
+            "meeting": meeting,
+            "doctor": doctor,
+            "schedule": meeting.idschedule,
+            "patient": meeting.idpatient,
+            "medical_record": medical_record
+        }
+        
+        return render(request, 'pages/appointmentDetail.html', context)
+    except Meetings.DoesNotExist:
+        return HttpResponse("Meeting not found")
 
 

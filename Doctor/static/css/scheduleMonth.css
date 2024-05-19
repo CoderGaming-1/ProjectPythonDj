@@ -274,7 +274,7 @@ button {
     width: 84px;
     font-size: 16px;
     align-self: flex-end;
-    margin-bottom: 4px;
+    margin-bottom: 6px;
 }
 .row input{
     border: none;
@@ -284,9 +284,9 @@ button {
     text-align: left;
     cursor: default;
 }
-#right-info input{
+#right-info input[type="text"]{
     background-color: var(--main-color);
-    text-align: end;
+    text-align: justify;
 }
 .row input:focus {
     outline: none;

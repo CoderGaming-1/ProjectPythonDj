@@ -7,13 +7,86 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" href="{% static 'css/meetingsStyle.css' %}">
+    <link rel="stylesheet" href="{% static 'css/meetingDetail.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 </head>
 
 <body>
-    <h1>Appointment detail</h1>
+    <!-- <h2>Appointment detail</h2> -->
+    <div class="container">        
+        <div class="wrapper-meeting">
+        <div class="left-side">
+            <div class="row-field">
+                <h2>Appointment's infomation:</h3>
+            </div>
+            <div class="row-field">
+                <label for="">Doctor:</label>
+                <h3>{{doctor.name}}</h3>
+            </div>
+            <div class="row-field">
+                <label for="">Time:</label>
+                <h3>{{schedule.startshift|date:"Y-m-d H:i"}}</h3>
+            </div>
+            <div class="row-field">
+                <label for="">Status:</label>
+                {% if meeting.status == 0 %}
+                    <h3>Inactive</h3>
+                {% elif meeting.status == 1 %}
+                    <h3>Pending</h3>
+                {% elif meeting.status == 2 %}
+                    <h3>Active</h3>
+                {% elif meeting.status == 3 %}
+                    <h3>Rejected</h3>
+                {% endif %}
+            </div>
+            {% if meeting.status == 0 %}
+                <div class="row-field">
+                    <label for="">Reason for cancellation:</label>
+                    <h3>{{meeting.reason}}</h3>
+                </div>
+            {% endif %}
+            <div class="row-field">
+                <label for="">Symptom:</label>
+                <h3>{{meeting.symptom}}</h3>
+            </div>
+        </div>
+        <div class="right-side">
+            <div class="row-field">
+                <h2>Patient's infomation:</h3>
+            </div>
+            <div class="row-field">
+                <label for="">Name:</label>
+                <h3>{{patient.name}}</h3>
+            </div>
+            <div class="row-field">
+                <label for="">Birth:</label>
+                <h3>{{patient.birth|date:"Y-m-d"}}</h3>
+            </div>
+            <div class="row-field">
+                <label for="">Gender:</label>
+                {% if patient.gender == true %}
+                    <h3>Female</h3>
+                {% else %}
+                    <h3>Male</h3>
+                {% endif %}
+                
+            </div>
+            <div class="row-field">
+                <label for="">Phone number:</label>
+                <h3>{{patient.phonenumber}}</h3>
+            </div>
+            <div class="row-field">
+                <label for="">Blood type:</label>
+                <h3>{{medical_record.bloodtype}}</h3>
+            </div>
+            <div class="row-field">
+                <label for="">Allergy:</label>
+                <h3>{{medical_record.allergy}}</h3>
+            </div>
+        </div>
+        </div>
+    </div>
 </body>
 
 </html>
