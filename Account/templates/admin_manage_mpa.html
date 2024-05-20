@@ -11,6 +11,32 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <link rel="stylesheet" href="{% static 'css/style1.css' %}">
+    <style>
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        .form-label {
+            display: block;
+            margin-bottom: .5rem;
+        }
+        .form-control {
+            width: 100%;
+            padding: .5rem;
+            margin-bottom: .5rem;
+        }
+        .btn-save {
+            display: block;
+            margin-left: auto;
+            background-color: green;
+            color: white;
+            border: none;
+            padding: .5rem 1rem;
+            cursor: pointer;
+        }
+        .btn-save:hover {
+            background-color: darkgreen;
+        }
+    </style>
 </head>
 
 <body>
@@ -51,26 +77,25 @@
                     <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
                         data-bs-target="#multi" aria-expanded="false" aria-controls="multi">
                         <i class="lni lni-layout"></i>
-                        <span>Management</span>
+                        <span>Multi Level</span>
                     </a>
                     <ul id="multi" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
                         <li class="sidebar-item">
                             <a href="#" class="sidebar-link collapsed" data-bs-toggle="collapse"
                                 data-bs-target="#multi-two" aria-expanded="false" aria-controls="multi-two">
-                                Account Management
+                                Account
                             </a>
                             <ul id="multi-two" class="sidebar-dropdown list-unstyled collapse">
                                 <li class="sidebar-item">
                                     <a href="{% url 'admin_mda' idUser %}" class="sidebar-link">Doctor</a>
-                                </li> 
+                                </li>
                                 <li class="sidebar-item">
-                                    <a href="{% url 'admin_mpa' idUser %}" class="sidebar-link">Patient</a>
+                                    <a href="{% url 'admin_mpa' idUser%}" class="sidebar-link">Patient</a>
                                 </li>
                             </ul>
                         </li>
                     </ul>
                 </li>
-
                 <li class="sidebar-item">
                     <a href="{% url 'admin_setting' idUser %}" class="sidebar-link">
                         <i class="lni lni-cog"></i>
@@ -106,70 +131,7 @@
             <main class="content px-3 py-4">
                 <div class="container-fluid">
                     <div class="mb-3">
-                        <h3 class="fw-bold fs-4 mb-3">Admin Dashboard</h3>
-                        <div class="row">
-                            <div class="col-12 col-md-4 ">
-                                <div class="card border-0">
-                                    <div class="card-body py-4">
-                                        <h5 class="mb-2 fw-bold">
-                                            Memebers Progress
-                                        </h5>
-                                        <p class="mb-2 fw-bold">
-                                            $72,540
-                                        </p>
-                                        <div class="mb-0">
-                                            <span class="badge text-success me-2">
-                                                +9.0%
-                                            </span>
-                                            <span class=" fw-bold">
-                                                Since Last Month
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-12 col-md-4 ">
-                                <div class="card  border-0">
-                                    <div class="card-body py-4">
-                                        <h5 class="mb-2 fw-bold">
-                                            Memebers Progress
-                                        </h5>
-                                        <p class="mb-2 fw-bold">
-                                            $50,200
-                                        </p>
-                                        <div class="mb-0">
-                                            <span class="badge text-danger me-2">
-                                                -5.0%
-                                            </span>
-                                            <span class="fw-bold">
-                                                Since This Month
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-12 col-md-4 ">
-                                <div class="card border-0">
-                                    <div class="card-body py-4">
-                                        <h5 class="mb-2 fw-bold">
-                                            Memebers Progress
-                                        </h5>
-                                        <p class="mb-2 fw-bold">
-                                            $102,540
-                                        </p>
-                                        <div class="mb-0">
-                                            <span class="badge text-success me-2">
-                                                +12.0%
-                                            </span>
-                                            <span class="fw-bold">
-                                                Since Previous Month
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <h3 class="fw-bold fs-4 my-3">Account Doctor
+                        <h3 class="fw-bold fs-4 my-3">Account Management
                         </h3>
                         <div class="row">
                             <div class="col-12">
@@ -179,30 +141,37 @@
                                             <th scope="col">#</th>
                                             <th scope="col">Name</th>
                                             <th scope="col">Email</th>
-                                            <th scope="col">Password</th>
+                                            <th scope="col">Birth</th>
+                                            <th scope="col">Gender</th>
+                                            <th scope="col">PhoneNumber</th>
+                                            <th scope="col">Nation</th>
+                                            <th scope="col">Status</th> 
+                                            <th scope="col">Block</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <th scope="row">1</th>
-                                            <td>Vy Thao</td>
-                                            <td>vythao@gmail.com</td>
-                                            <td>123456</td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row">2</th>
-                                            <td>Hoang Phan</td>
-                                            <td>hoangphan5@gmail.com</td>
-                                            <td>123456</td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row">3</th>
-                                            <td>Hong Ngan</td>
-                                            <td>hongngan@gmail.com</td>
-                                            <td>123456</td>
-                                        </tr>
+                                        {% for user in users %}
+                                            <tr>
+                                                <td>{{ forloop.counter }}</td>
+                                                <td>{{ user.name }}</td>
+                                                <td>{{ user.accounts__email }}</td>
+                                                <td>{{ user.birth }}</td>
+                                                <td>{{ user.gender|yesno:"Male,Female" }}</td>
+                                                <td>{{ user.phonenumber }}</td>
+                                                <td>{{ user.nation }}</td>
+                                                <td>{{ user.status }}</td>
+                                                <td>
+                                                    <a href="#" class="btn btn-sm {% if user.status %}btn-danger{% else %}btn-success{% endif %} edit-btn"
+                                                       data-user-id="{{ user.id }}" data-status="{{ user.status }}">
+                                                       {% if user.status %}Able{% else %}Unable{% endif %}
+                                                    </a>
+                                                </td>
+                                                
+                                            </tr>
+                                        {% endfor %}
                                     </tbody>
                                 </table>
+                                
                             </div>
                         </div>
                     </div>
@@ -212,21 +181,10 @@
                 <div class="container-fluid">
                     <div class="row text-body-secondary">
                         <div class="col-6 text-start ">
-                            <!-- <a class="text-body-secondary" href=" #">
-                                <strong>CodzSwod</strong>
-                            </a> -->
                         </div>
                         <div class="col-6 text-end text-body-secondary d-none d-md-block">
                             <ul class="list-inline mb-0">
-                                <!-- <li class="list-inline-item">
-                                    <a class="text-body-secondary" href="#">Contact</a>
-                                </li>
-                                <li class="list-inline-item">
-                                    <a class="text-body-secondary" href="#">About Us</a>
-                                </li>
-                                <li class="list-inline-item">
-                                    <a class="text-body-secondary" href="#">Terms & Conditions</a> -->
-                                </li>
+                            
                             </ul>
                         </div>
                     </div>
@@ -234,10 +192,53 @@
             </footer>
         </div>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
-        crossorigin="anonymous"></script>
-    <script src="{% static 'js/script.js'  %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="{% static 'js/script.js' %}"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('.edit-btn').click(function (e) {
+                e.preventDefault();
+                var userId = $(this).data('user-id');
+                var status = $(this).data('status');
+    
+                // Toggle the status value (0 -> 1, 1 -> 0)
+                var newStatus = status ? 0 : 1;
+    
+                // Make the AJAX request to update the status
+                $.ajax({
+                    type: 'POST',
+                    url: '{% url "update_user_status" %}',
+                    data: {
+                        'userId': userId,
+                        'newStatus': newStatus,
+                        'csrfmiddlewaretoken': '{{ csrf_token }}'
+                    },
+                    success: function (response) {
+                        if (response.status === 'success') {
+                            var btn = $('.edit-btn[data-user-id="' + userId + '"]');
+                            if (newStatus) {
+                                btn.removeClass('btn-success').addClass('btn-danger');
+                            } else {
+                                btn.removeClass('btn-danger').addClass('btn-success');
+                            }
+                            // Update the data-status attribute with the new status
+                            btn.data('status', newStatus);
+                            location.reload();
+                        } else {
+                            console.error('Error:', response.message);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error:', xhr.responseText);
+                    }
+                });
+            });
+        });
+    </script>
+    
+
 </body>
 
 </html>

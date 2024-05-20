@@ -1,0 +1,47 @@
+<!-- user_form.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Update Doctor</title>
+</head>
+<body>
+    <h1>Profile</h1>
+    <!-- <form method="post" action="% url 'doctor_edit' %"> -->
+    <form method="post" >
+        {% csrf_token %}
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" value="{{ name }}"><br>
+
+        <label for="birth">Birth:</label>
+        <input type="date" id="birth" name="birth" value="{{ birth }}"><br>
+
+        <label for="gender">Gender:</label>
+        <select id="gender" name="gender">
+            <option value="Male" {% if gender == 'Male' %}selected{% endif %}>Male</option>
+            <option value="Female" {% if gender == 'Female' %}selected{% endif %}>Female</option>
+        </select><br>
+
+        <label for="phonenumber">Phone Number:</label>
+        <input type="text" id="phonenumber" name="phonenumber" value="{{ phonenumber }}"><br>
+
+        <label for="user_email">Email :</label>
+        <input type="text" id="user_email" name="user_email" value="{{ user_email }}"><br>
+
+        <label for="nation">Nation:</label>
+        <input type="text" id="nation" name="nation" value="{{ nation }}"><br>
+
+        <label for="graduation">Graduation:</label>
+        <input type="text" id="graduation" name="graduation" value="{{ graduation }}"><br>
+
+        <label for="avatar">Avatar:</label>
+        <input type="file" id="avatar" name="avatar" class="form-control-file">
+        <!-- bytes -->
+
+        <label for="description">Description:</label>
+        <input type="text" id="description" name="description" value="{{ description }}"><br>
+
+        <button type="submit" class="btn btn-success">Edit</button>
+        <button type="button" class="btn btn-danger">Delete</button>
+    </form>
+</body>
+</html>
