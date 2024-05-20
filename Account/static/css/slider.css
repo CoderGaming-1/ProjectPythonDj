@@ -28,7 +28,7 @@ body {
   display: flex;
   flex-direction: column;
   flex: 1;
-  margin-top: 30px; /* Added margin top to align with the picture */
+  margin-top: 30px; 
 }
 
 .doctor-info .profile-info h1 {
@@ -55,21 +55,21 @@ body {
   margin-bottom: 10px;
   margin-left: -400px;
   position: relative;
-  top: 250px; /* Add this line */
+  top: 250px; 
   font-size:18px;
 }
 .doctor-info .profile-info .field-text3 {
   margin-bottom: 10px;
   margin-left: 500px;
   position: relative;
-  top: -235px; /* Add this line */
+  top: -235px; 
   font-size:18px;
 }
 .doctor-info .profile-info .field-text2 {
   margin-bottom: 10px;
   margin-left: 40px;
   position: relative;
-  top: -80px; /* Add this line */
+  top: -80px; 
   font-size:18px;
   
 }
@@ -81,7 +81,7 @@ body {
   display: block;
   margin-bottom: 30px;
   position: relative;
-  top: -368px; /* Add this line */
+  top: -368px; 
   left: 830px;
   font-size:18px;
 }
@@ -100,7 +100,7 @@ body {
   margin-bottom: 10px;
   margin-left: -400px;
   position: relative;
-  top: 250px; /* Add this line */
+  top: 250px; 
   color: white;
   font-family: 'Roboto', sans-serif;
 }
@@ -113,7 +113,7 @@ body {
 
 .white-line {
   width: 35%;
-  height: 2px; /* Adjust height as needed */
+  height: 2px; 
   background-color: white;
   position: relative;
   margin-left: -200px;

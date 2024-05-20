@@ -14,7 +14,7 @@
     <link rel="stylesheet" href="{%static 'app/css/owl.carousel.min.css' %}">
     <link rel="stylesheet" href="{%static 'app/css/owl.theme.default.min.css' %}">
 
-    <!-- Bootstrap CSS -->
+
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
@@ -33,7 +33,7 @@
                 <li><span class="nav-item">Home</span></li>
                 <li><span class="nav-item">Service</span></li>
             </ul>
-            <button class="button">Log out<i class="fa-solid fa-arrow-right-from-bracket"></i></button>
+            <button class="button"><a href="{% url 'login' %}">Log Out</a><i class="fa-solid fa-arrow-right-from-bracket"></i></button>
         </div>
     
         <!-- Bootstrap Carousel -->

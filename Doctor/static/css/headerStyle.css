@@ -99,7 +99,7 @@ li, a {
     margin-left: 8px;
 }
 /* doctor-info */
-.doctor-info{
+.doctor-container{
     height: 400px;
     width: 100%;
     background-color: var(--strong-main-color);
