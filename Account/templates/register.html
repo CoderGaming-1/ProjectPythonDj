@@ -1,62 +1,9 @@
-<!-- {% load static %}
-<!DOCTYPE html>
-<html>
-<head>
-	<title>Sign Up New Account</title>
-	<link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600&display=swap" rel="stylesheet">
-	<link rel="stylesheet" href="{% static 'css/style.css' %}">
-</head>
-<body>
-	<div class="background-divider">
-		<div class="left-side">
-			<div class="login-form white-bg">
-				<form id="form" method="post" action="{% url 'register' %}">
-					{% csrf_token %}
-				<div class="title">Sign Up</div>
-				<input type="email" name="email" class="input-field" placeholder="Email Address">
-				<input type="password" name="password" class="input-field" placeholder="Password">
-        		<input type="confirmpassword" name="confirm_password" class="input-field" placeholder="Confirm Password">
-				<div class="links-and-buttons">
-        			<button type="submit" class="sign-in-button">Confirm</button>
-				</div>
-			</form>
-			</div>
-		</div>
-		<div class="right-side">
-			<div class="image-container">
-				<img class="dentist-image" src="{% static 'images/Dentist.PNG' %}" alt="Dentist image">
-			</div>
-		</div>
-	</div>
-</body>
-</html> -->
-<!-- <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Password Reset</title>
-</head>
-<body>
-    <h2>Password Reset</h2>
-    {% if error %}
-        <p style="color: red;">{{ error }}</p>
-    {% endif %}
-    <form method="post">
-        {% csrf_token %}
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email" required>
-        <button type="submit">Reset Password</button>
-    </form>
-</body>
-</html> -->
-
 {% load static %}
 <!DOCTYPE html>
 <html>
 
 <head>
-	<title>Forgot Password?</title>
+	<title>Sign Up New Account</title>
 	<link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600&display=swap" rel="stylesheet">
 	<link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
@@ -65,12 +12,22 @@
 	<div class="background-divider">
 		<div class="background-left">
 			<div class="left-side">
-				<form id="form" method="post" action="{% url 'forgetpass' %}">
+				<!-- <div class="login-form white-bg"> -->
+				<form id="form" method="post" action="{% url 'register' %}">
 					{% csrf_token %}
-					<div class="title">Forget Password</div>
-					<input type="email" name="email" id="email" class="input-field" placeholder="Email Address">
-					<div class="links-and-buttons">
-						<button type="submit" class="sign-in-button">Submit</button>
+					<div class="title">Sign Up</div>
+					<input type="email" name="email" class="input-field" placeholder="Email Address">
+					<!-- <input type="password" name="password" class="input-field" placeholder="Password"> -->
+					<div class="row">
+						<input type="password" name="password" class="input-field" placeholder="Password" required>
+						<img src="{% static 'images/eyeoff.png' %}" alt="Eye Off">
+					</div>
+					<div class="row" style="margin-top: 48px;">
+						<input type="confirmpassword" name="confirm_password" class="input-field" placeholder="Confirm Password">
+						<img src="{% static 'images/eyeoff.png' %}" alt="Eye Off">
+					</div>
+					<div class="links-and-buttons" style="margin-top: 60px;">
+						<button type="submit" class="sign-in-button">Sign Up</button>
 						<div class="white-line"></div>
 						<a href="{% url 'login' %}" class="sign-up">Back to login</a>
 					</div>
@@ -78,14 +35,14 @@
 			</div>
 		</div>
 		<div class="background-right">
-			<div class="right-side">
-				<div class="image-container">
-					<img class="dentist-image" src="{% static 'images/Dentist.PNG' %}" alt="Dentist image">
-				</div>
+		<div class="right-side">
+			<div class="image-container">
+				<img class="dentist-image" src="{% static 'images/Dentist.PNG' %}" alt="Dentist image">
 			</div>
 		</div>
-
 	</div>
+	</div>
+
 </body>
 
 </html>
