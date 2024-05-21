@@ -6,6 +6,7 @@ from datetime import datetime, timedelta, time
 import pytz
 from .models import Roles, Users, Accounts, Schedules, Meetings
 from django.urls import reverse
+from django.core.paginator import Paginator
 
 def format_date(input_date):
     month_names = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
@@ -34,7 +35,13 @@ def get_page(request):
                 # Định dạng trường startshift của mỗi phần tử trong schedules
                 schedule.formatted_startshift = format_date(schedule.startshift)
 
-        context = {"schedules": schedules, "idPatient": patient_id, "name": user.name}
+        # Sử dụng Paginator để phân trang
+        paginator = Paginator(schedules, 12)  # 10 schedules mỗi trang
+        page_number = request.GET.get('page', 1)
+        page_obj = paginator.get_page(page_number)
+
+        #context = {"schedules": schedules, "idPatient": patient_id, "name": user.name}
+        context = {"page_obj": page_obj, "idPatient": patient_id, "name": user.name}
         return render(request, 'BookAppointment.html', context)
     except ObjectDoesNotExist:
         print("Không tìm thấy role có id là 2")

@@ -37,6 +37,7 @@
     .submitForm{
         margin-left: 25px;
         margin-top: 30px;
+        margin: 30px 0 25px 30px;
         border: none; 
         background-color: #42AEB1; 
         border-radius: 10px; 
@@ -56,12 +57,31 @@
     #showDrInfo.visible {
         display: block;
         background-color: #42AEB1; 
-        width: 30%; 
+        width: 27.5%; 
         padding-left: 25px; 
         color: #ffffff; 
         border-radius: 5px; 
         margin-left: 10px; 
         margin-right: 25px;
+    }
+    .pagination {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+    }
+
+    .step-links {
+        display: flex;
+        gap: 10px;
+    }
+
+    .step-links a {
+        text-decoration: none;
+        color: blue;
+    }
+
+    .step-links .current {
+        font-weight: bold;
     }
 </style>
 
@@ -94,7 +114,7 @@
                 document.getElementById("name").textContent = doctorName;
                 document.getElementById("phone").textContent = phone;
                 document.getElementById("graduation").textContent = graduation;
-                document.getElementById("gender").textContent = gender == "True" ? "Nu" : "Nam";
+                document.getElementById("gender").textContent = gender == "True" ? "Female" : "Male";
                 document.getElementById("birth").textContent = birth.split(',')[0] + birth.split(',')[1];
                 document.getElementById("nation").textContent = nation;
 
@@ -133,7 +153,7 @@
 </script>
 
 <div class="intro">
-    <h2 style="color: #185C79; margin-left: 10px; margin-bottom: 0px; font-size: 26px;">Hi, {{ name }}</h2>
+    <h2 style="color: #185C79; margin-left: 10px; margin-bottom: 0px; font-size: 26px; font-family: 'Roboto', sans-serif;">Hi, {{ name }}</h2>
     <div style="display: flex; padding: 10px;">
         <p style="width: 70%; color: #ffffff; font-size: 24px; padding-right: 50px; text-align: justify;">
             We use the latest technology and techniques to provide the most effective care possible, and we are dedicated to helping you achieve optimal oral health. With our customized treatment plans, you can enjoy a healthy, beautiful smile for life.
@@ -151,7 +171,7 @@
         <h3 style="color: #4FA5A8; margin: 10px;">Choose Schedule</h3>
     </div>
     <div name="SchedulesPart" style="display: flex; flex-wrap: wrap; margin-bottom: 20px; padding-left: 25px;">
-        {% for schedule in schedules %}
+        {% for schedule in page_obj %}
             <div class="box" id="{{ schedule.id }}"
             data-name="{{ schedule.iduser.name }}"
             data-phone="{{ schedule.iduser.phonenumber }}"
@@ -163,6 +183,23 @@
                 <h4 style="margin-left: 20px; margin-bottom: 40px;">{{schedule.iduser.name}}</h4>
             </div>
         {% endfor %}
+    </div>
+    <div class="pagination">
+        <span class="step-links">
+            {% if page_obj.has_previous %}
+                <a href="?page=1">&laquo; first</a>
+                <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+            {% endif %}
+
+            <span class="current">
+                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+            </span>
+
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}">next</a>
+                <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+            {% endif %}
+        </span>
     </div>
 
     <div class="divTittle" style="display: flex; margin-left: 25px; height: 40px;">
