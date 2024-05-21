@@ -1,18 +1,21 @@
 from django.shortcuts import render
 from django.shortcuts import redirect
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.utils import timezone
 from django.core.serializers.json import DjangoJSONEncoder
 from django.http import JsonResponse
 from django.db.models import Prefetch
+from django.urls import reverse
 
 from .models import Roles, Users, Accounts, Schedules, Meetings, Medicalrecords
 import json
 import logging
 import pytz
+import base64
 import datetime as dt
 from datetime import datetime, timedelta, time
 
+iduser = 4
 class DateTimeEncoder(DjangoJSONEncoder):
     def default(self, obj):
         if isinstance(obj, dt.datetime):
@@ -23,28 +26,28 @@ logger = logging.getLogger(__name__)
 def index(request):
     return render(request, 'pages/home.html')
 
+
+
 def schedule(request):
-    # iduser = 4
+    iduser = 4
+    # doctor = Users.objects.filter(status=1).get(id=iduser)
+    # accoutDoctor = Accounts.objects.filter(iduser__id=iduser).first()
     # schedules = Schedules.objects.filter(iduser__id=iduser).select_related('iduser')
     # # schedule_test_json = json.dumps(schedules, cls=DateTimeEncoder)
-    
+    # for schedule in schedules:
+    #     schedule.startshift= schedule.startshift.replace(tzinfo=None)
     # schedules_list = list(schedules.values('status', 'startshift'))
     # schedules_json = json.dumps(schedules_list, cls=DateTimeEncoder)
     # #return HttpResponse(schedules_json)
-    # context = { "iduser": iduser,
+    # context = { "doctor": doctor,
+    #             "accountDoctor": accoutDoctor,
     #             "schedules": schedules, 
     #             "schedules_json": schedules_json,
     #            }
     # return render(request, 'pages/schedule.html', context)
-
-    # Bo new code
-    # Lấy múi giờ UTC
+    doctor = Users.objects.filter(status=1).get(id=iduser)
+    accoutDoctor = Accounts.objects.filter(iduser__id=iduser).first()
     utc = pytz.utc
-    iduser = 4
-    # Truy vấn bảng Schedules và prefetch các liên kết cần thiết
-    # schedules = Schedules.objects.filter(iduser__id=iduser).select_related('iduser').prefetch_related(
-    #     Prefetch('meetings_set', queryset=Meetings.objects.select_related('idpatient__medicalrecords'))
-    # )
     schedules = Schedules.objects.filter(iduser__id=iduser).select_related('iduser').prefetch_related(
         Prefetch('meetings_set', queryset=Meetings.objects.select_related('idpatient').prefetch_related('idpatient__medicalrecords_set'))
     )
@@ -54,7 +57,7 @@ def schedule(request):
     for schedule in schedules:
         meeting = schedule.meetings_set.first()
 
-        # Chuyển đổi startshift sang UTC+0
+        # Chuyển đổi startshift sang UTC+0z
         startshift_aware = schedule.startshift
         if startshift_aware.tzinfo is None or startshift_aware.tzinfo.utcoffset(startshift_aware) is None:
             startshift_aware = timezone.make_aware(startshift_aware)
@@ -90,42 +93,61 @@ def schedule(request):
     
     schedules_json = json.dumps(schedules_list, cls=DateTimeEncoder)
     # return HttpResponse(schedules_json)
-    context = { "iduser": iduser,
+    context = { "doctor": doctor,
+                "accountDoctor": accoutDoctor,
                 "schedules": schedules, 
                 "schedules_json": schedules_json,
                }
     return render(request, 'pages/schedule.html', context)
 
-def createSchedule(request):
-    try:
-        iduser = 4
-        startShift = request.POST["startShift"]
-        endShift = request.POST["endShift"]
-        createdDate = datetime.now()
-        starttime = timezone.make_aware(datetime.strptime(startShift, '%Y-%m-%dT%H:%M'))
-        endtime = timezone.make_aware(datetime.strptime(endShift, '%Y-%m-%dT%H:%M'))
-        doctor_instance = Users.objects.get(pk=iduser)
+# def createSchedule(request):
+#     try:
+#         iduser = 4
+#         startShift = request.POST["startShift"]
+#         endShift = request.POST["endShift"]
+#         createdDate = datetime.now()
+#         starttime = timezone.make_aware(datetime.strptime(startShift, '%Y-%m-%dT%H:%M'))
+#         endtime = timezone.make_aware(datetime.strptime(endShift, '%Y-%m-%dT%H:%M'))
+#         doctor_instance = Users.objects.get(pk=iduser)
         
-        current_time = starttime
-        while current_time < endtime:
-            if time(7, 0) <= current_time.time() <= time(19, 0):
-                if not Schedules.objects.filter(iduser=doctor_instance, startshift=current_time, status=1).exists():
-                    Schedules.objects.create(
-                        iduser=doctor_instance, 
-                        startshift=current_time, 
-                        status=1, 
-                        createdby=iduser, 
-                        createddate=createdDate
-                    )
-            current_time += timedelta(minutes=30)
-            if current_time.time() >= time(19, 0):
-                current_time = current_time.replace(hour=7, minute=0) + timedelta(days=1)
-        return redirect('/Doctor/schedule')
-        # return HttpResponse('Created successfully')
-        # return JsonResponse({'status': 'success'})
-    except Exception as e:
-        return HttpResponse(f'Error: {str(e)}')
+#         current_time = starttime
+#         while current_time < endtime:
+#             if time(7, 0) <= current_time.time() <= time(19, 0):
+#                 if not Schedules.objects.filter(iduser=doctor_instance, startshift=current_time, status=1).exists():
+#                     Schedules.objects.create(
+#                         iduser=doctor_instance, 
+#                         startshift=current_time, 
+#                         status=1, 
+#                         createdby=iduser, 
+#                         createddate=createdDate
+#                     )
+#             current_time += timedelta(minutes=30)
+#             if current_time.time() >= time(19, 0):
+#                 current_time = current_time.replace(hour=7, minute=0) + timedelta(days=1)
+#         return redirect('/Doctor/schedule')
+#         # return HttpResponse('Created successfully')
+#         # return JsonResponse({'status': 'success'})
+#     except Exception as e:
+#         return HttpResponse(f'Error: {str(e)}')
+def updateDoctor(request):
+    try:
+        idDoctor = request.POST["idDoctor"]
+        birth = datetime.strptime(request.POST.get("birthDoctor"), "%Y-%m-%d")
+        genderStr = request.POST["gender-selected"]
+        gender = genderStr == "female"
 
+        doctor = Users.objects.get(id=idDoctor)
+        
+        doctor.birth = timezone.make_aware(birth)
+        doctor.gender = gender
+        doctor.updatedby =idDoctor
+        doctor.updateddate = timezone.localtime(timezone.now())
+        doctor.save()
+        
+        previous_page = request.META.get('HTTP_REFERER', '/')
+        return HttpResponseRedirect(previous_page)
+    except Exception as e:
+        return HttpResponse(f"Error: {str(e)}")
 def createSchedule(request):
     try:
         iduser = 4
@@ -258,7 +280,8 @@ def getMeetingByIdSchedule(request):
         return JsonResponse({'error': 'Invalid request method'}, status=405)
 
 def appointment(request):
-    iduser = 4
+    doctor = Users.objects.filter(status=1).get(id=iduser)
+    accoutDoctor = Accounts.objects.filter(iduser__id=iduser).first()
     meetings = Meetings.objects.filter(idschedule__iduser=iduser).select_related('idschedule', 'idpatient').order_by('-idschedule__startshift')
 
     STATUS_MAP = {
@@ -281,12 +304,11 @@ def appointment(request):
     now = datetime.now()
     print('now: ', now)
     for meeting in meetings_list:
-        # meeting['idschedule__startshift'] = timezone.localtime(meeting['idschedule__startshift'], timezone=pytz.UTC)
-        # meeting['idschedule__startshift'] = meeting['idschedule__startshift'].astimezone(timezone.get_current_timezone())
         meeting['idschedule__startshift'] = meeting['idschedule__startshift'].replace(tzinfo=None)
         meeting['status'] = STATUS_MAP.get(meeting['status'], 'Unknown')
     context = {
-        "iduser": iduser,
+        "doctor": doctor,
+        "accountDoctor": accoutDoctor,
         "meetings": meetings_list,
         "nowTime": now,
     }
@@ -354,13 +376,16 @@ def appointmentDetail(request, idMeeting):
         ).get(id=idMeeting)
 
         doctor_id = meeting.idschedule.iduser_id
-        doctor = Users.objects.get(id=doctor_id)
+        doctor = Users.objects.filter(status=1).get(id=doctor_id)
+            # doctor = Users.objects.get(id=iduser)
+        accoutDoctor = Accounts.objects.filter(iduser__id=doctor_id).first()
 
         medical_record = Medicalrecords.objects.filter(iduser__id=meeting.idpatient.id).first()
-        
+        meeting.idschedule.startshift = meeting.idschedule.startshift.replace(tzinfo=None)
         context = {
             "meeting": meeting,
             "doctor": doctor,
+            "accountDoctor": accoutDoctor,
             "schedule": meeting.idschedule,
             "patient": meeting.idpatient,
             "medical_record": medical_record

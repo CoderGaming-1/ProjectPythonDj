@@ -143,3 +143,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 ALLOWED_HOSTS = []
 
 
+# Add by Thao
+DATA_UPLOAD_MAX_MEMORY_SIZE = 1024 * 1024 * 10
+
+

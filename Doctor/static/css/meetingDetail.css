@@ -39,7 +39,7 @@ body {
     -ms-overflow-style: none;
     scrollbar-width: none;
 }
-h2{
+.container h2{
     margin: 20px 60px;
 }
 .container{
