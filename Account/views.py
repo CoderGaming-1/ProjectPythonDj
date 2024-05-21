@@ -61,21 +61,28 @@ def login_view(request):
         password = request.POST["password"]
         msg = None 
         # try:
-        user = Accounts.objects.get(email=email)
+        user = Accounts.objects.filter(email=email, password=password, status=1).first()
         
         # Verify the password
-        if password == user.password: 
+        if user: 
             user_real = user.iduser
             if user_real:
                 user_role = Roles.objects.filter(id=user_real.idrole.id).first()
+                request.session['iduser'] = user_real.id
                 if user_role.rolename == 'admin':
                     #return render(request,'admin.html',{'id': user.iduser.id} )
                     idUser = user.iduser.id
                     admin_url = reverse('admin', args=[idUser])
                     return redirect(admin_url)
                 elif user_role.rolename == 'doctor':
-                    return render(request,'doctor.html', {'id': user.iduser.id})
+                    schedule_url = reverse('schedule')
+                    # Redirect to the generated URL
+                    return redirect(schedule_url)
+                    #return render(request,'doctor.html', {'id': user.iduser.id})
                 elif user_role.rolename == 'patient':
+                    BookAppointment_url = reverse('BookAppointment')
+                    # Redirect to the generated URL
+                    return redirect(BookAppointment_url)
                     return render(request,'patient.html',{'id': user.iduser.id})
         else:
             msg = "Fail"

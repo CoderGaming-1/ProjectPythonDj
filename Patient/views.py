@@ -1,10 +1,11 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils import timezone
 from datetime import datetime, timedelta, time
 import pytz
 from .models import Roles, Users, Accounts, Schedules, Meetings
+from django.urls import reverse
 
 def format_date(input_date):
     month_names = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
@@ -16,8 +17,13 @@ def format_date(input_date):
     return f"{month} {day}, {year}, {hours}:{minutes}"
 
 # Create your views here.
-def get_page(request, patient_id):
+def get_page(request):
     try:
+        patient_id = request.session.get('iduser')
+        if patient_id is None:
+            login_url = reverse('login')
+            return redirect(login_url)
+        
         user = Users.objects.get(pk=patient_id)
         current_time = timezone.now()
         tz = pytz.timezone('Asia/Ho_Chi_Minh')
@@ -67,8 +73,13 @@ def PostBookAppointment(request):
         return HttpResponse(e)
     
 
-def get_HistoryAppointment(request, patient_id):
+def get_HistoryAppointment(request):
     try:
+        patient_id = request.session.get('iduser')
+        if patient_id is None:
+            login_url = reverse('login')
+            return redirect(login_url)
+
         user = Users.objects.get(pk=patient_id)
         current_time = timezone.now()
         tz = pytz.timezone('Asia/Ho_Chi_Minh')
@@ -86,6 +97,11 @@ def get_HistoryAppointment(request, patient_id):
 
 def cancel_HistoryAppointment(request):
     try:
+        patient_id = request.session.get('iduser')
+        if patient_id is None:
+            login_url = reverse('login')
+            return redirect(login_url)
+
         idMeeting = request.POST["idMeeting"]
         
         current_time_tz = timezone.now()  + timedelta(hours=7)
@@ -95,8 +111,8 @@ def cancel_HistoryAppointment(request):
         meeting = Meetings.objects.get(pk=idMeeting)
         meeting.status = 0
         meeting.updateddate = current_time_tz_vn
-        meeting.updatedby = meeting.idpatient.id
-        patient_id = meeting.idpatient
+        meeting.updatedby = patient_id #meeting.idpatient.id
+        #patient_id = meeting.idpatient.id
         meeting.save()
 
         schedule_instance = Schedules.objects.get(pk=meeting.idschedule.id)

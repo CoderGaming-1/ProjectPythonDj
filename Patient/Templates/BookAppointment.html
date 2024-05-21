@@ -1,8 +1,9 @@
-{% extends "base.html" %}
+<!-- {% extends "base.html" %}
 
 
-{% block content %}
+{% block content %} -->
 {% load static %}
+{% include "header.html" %}
 <style>
     .intro{
         padding: 5px;
@@ -132,9 +133,9 @@
 </script>
 
 <div class="intro">
-    <h2 style="color: #185C79; margin-left: 10px; margin-bottom: 0px;">Hi, {{ name }}</h2>
+    <h2 style="color: #185C79; margin-left: 10px; margin-bottom: 0px; font-size: 26px;">Hi, {{ name }}</h2>
     <div style="display: flex; padding: 10px;">
-        <p style="width: 70%; color: #ffffff; font-size: 28px; padding-right: 50px; text-align: justify;">
+        <p style="width: 70%; color: #ffffff; font-size: 24px; padding-right: 50px; text-align: justify;">
             We use the latest technology and techniques to provide the most effective care possible, and we are dedicated to helping you achieve optimal oral health. With our customized treatment plans, you can enjoy a healthy, beautiful smile for life.
         </p>
         <!-- <img class="imgIntroPatient" src="../static/images/imgIntroPatient.png" alt="ToothCareimgIntroPatient"> -->

@@ -12,6 +12,7 @@ import logging
 import pytz
 import datetime as dt
 from datetime import datetime, timedelta, time
+from django.urls import reverse
 
 class DateTimeEncoder(DjangoJSONEncoder):
     def default(self, obj):
@@ -40,7 +41,13 @@ def schedule(request):
     # Bo new code
     # Lấy múi giờ UTC
     utc = pytz.utc
-    iduser = 4
+    iduser = request.session.get('iduser')
+
+    if iduser is None:
+        login_url = reverse('login')
+        # Redirect to the generated URL
+        return redirect(login_url)
+
     # Truy vấn bảng Schedules và prefetch các liên kết cần thiết
     # schedules = Schedules.objects.filter(iduser__id=iduser).select_related('iduser').prefetch_related(
     #     Prefetch('meetings_set', queryset=Meetings.objects.select_related('idpatient__medicalrecords'))
@@ -98,37 +105,12 @@ def schedule(request):
 
 def createSchedule(request):
     try:
-        iduser = 4
-        startShift = request.POST["startShift"]
-        endShift = request.POST["endShift"]
-        createdDate = datetime.now()
-        starttime = timezone.make_aware(datetime.strptime(startShift, '%Y-%m-%dT%H:%M'))
-        endtime = timezone.make_aware(datetime.strptime(endShift, '%Y-%m-%dT%H:%M'))
-        doctor_instance = Users.objects.get(pk=iduser)
+        iduser = request.session.get('iduser')
+        if iduser is None:
+            login_url = reverse('login')
+            # Redirect to the generated URL
+            return redirect(login_url)
         
-        current_time = starttime
-        while current_time < endtime:
-            if time(7, 0) <= current_time.time() <= time(19, 0):
-                if not Schedules.objects.filter(iduser=doctor_instance, startshift=current_time, status=1).exists():
-                    Schedules.objects.create(
-                        iduser=doctor_instance, 
-                        startshift=current_time, 
-                        status=1, 
-                        createdby=iduser, 
-                        createddate=createdDate
-                    )
-            current_time += timedelta(minutes=30)
-            if current_time.time() >= time(19, 0):
-                current_time = current_time.replace(hour=7, minute=0) + timedelta(days=1)
-        return redirect('/Doctor/schedule')
-        # return HttpResponse('Created successfully')
-        # return JsonResponse({'status': 'success'})
-    except Exception as e:
-        return HttpResponse(f'Error: {str(e)}')
-
-def createSchedule(request):
-    try:
-        iduser = 4
         startShift = request.POST["startShift"]
         endShift = request.POST["endShift"]
         createdDate = datetime.now()
@@ -258,7 +240,11 @@ def getMeetingByIdSchedule(request):
         return JsonResponse({'error': 'Invalid request method'}, status=405)
 
 def appointment(request):
-    iduser = 4
+    iduser = request.session.get('iduser')
+    if iduser is None:
+        login_url = reverse('login')
+        # Redirect to the generated URL
+        return redirect(login_url)
     meetings = Meetings.objects.filter(idschedule__iduser=iduser).select_related('idschedule', 'idpatient').order_by('-idschedule__startshift')
 
     STATUS_MAP = {
