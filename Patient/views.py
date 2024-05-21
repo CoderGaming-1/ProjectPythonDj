@@ -73,7 +73,8 @@ def PostBookAppointment(request):
             schedule_instance.updateddate = current_time_tz_vn
             schedule_instance.updatedby = idPatient
             schedule_instance.save()
-            return HttpResponse(str(current_time_tz_vn)) #str(result)
+            HistoryAppointment_url = reverse('HistoryAppointment')
+            return redirect(HistoryAppointment_url)
         
         return HttpResponse('Validation Failed.')
     except Exception as e:

@@ -15,7 +15,7 @@ import string
 from django.http import JsonResponse
 from django.http import HttpResponseRedirect
 from django.urls import reverse
-import pycountry
+#import pycountry
 def generate_random_password(length=12):
     characters = string.ascii_letters + string.digits
     password = ''.join(random.choice(characters) for _ in range(length))
@@ -52,9 +52,10 @@ def get_login_view(request):
     return render(request, 'login.html')
 
 def login_view(request):
-    email = request.POST["email"]
-    password = request.POST["password"]
-    msg = None
+    # hngan comment this:
+    # email = request.POST["email"]
+    # password = request.POST["password"]
+    # msg = None
 
     if request.method == 'POST':    
         email = request.POST["email"]
@@ -314,8 +315,15 @@ def doctor_edit(request, idUser):
         # return redirect('header.html')
     return render(request, 'edit.html')
 
-def profile_patient(request, idUser):
+def profile_patient(request):
     if request.method != 'POST':
+
+        #hngan add session
+        idUser = request.session.get('iduser')
+        if idUser is None:
+            login_url = reverse('login')
+            return redirect(login_url)
+        
         user = Users.objects.get(id=idUser)
         account = Accounts.objects.filter(iduser=idUser, status=1).first()
         medical = Medicalrecords.objects.filter(iduser = idUser).first()
