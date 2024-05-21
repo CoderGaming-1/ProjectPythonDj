@@ -1,4 +1,4 @@
-<!-- {% load static %}
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -10,6 +10,58 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
   <link rel="stylesheet" href="{% static 'css/slider.css' %}">
+  <script>
+    function makeEditable() {
+        // Enable input fields
+        var inputFields = document.querySelectorAll('.input-info');
+        inputFields.forEach(function(el) {
+            el.removeAttribute('readonly');
+        });
+        
+        // Enable radio buttons
+        var radioButtons = document.querySelectorAll('.gender-selection input[type="radio"]');
+        radioButtons.forEach(function(el) {
+            el.removeAttribute('disabled');
+        });
+
+        // Show save button
+        var saveButton = document.getElementById('save-button');
+        if (saveButton) {
+            saveButton.style.display = 'block';
+        }
+
+        // Show change profile picture button
+        var changeProfileButton = document.querySelector('.doctor-container .action-form button:nth-child(2)');
+        if (changeProfileButton) {
+            changeProfileButton.style.display = 'block';
+        }
+    }
+</script>
+<style>
+  /* Style for Save button */
+  #save-button, #change-profile-button {
+      display: none;
+      background-color: #4CAF50; /* Green */
+      border: none;
+      color: white;
+      padding: 10px 20px;
+      text-align: center;
+      text-decoration: none;
+      font-size: 16px;
+      cursor: pointer;
+      border-radius: 8px;
+      margin-right: 5px;
+  }
+
+  /* Style for Change Profile Picture button */
+  #change-profile-button {
+      background-color: #FFD700; /* Yellow */
+      padding: 5px 10px; /* Smaller padding */
+      font-size: 14px; /* Smaller font size */
+  }
+</style>
+
+
 </head>
 
 <body>
@@ -34,20 +86,22 @@
     </div>
     <div class="doctor-container">
       <div class="action-form">
-        <img src="{% static 'images/edit.png' %}" alt="Edit Icon">
-        <img src="{% static 'images/settings.png' %}" alt="Setting Icon">
+        <button type="button" id="save-button" style="display:none;">Save</button>
+        <button type="button" onclick="changeProfilePicture()" id="change-profile-button" style="display:none;">Change Profile Picture</button>
+        <img src="{% static 'images/edit.png' %}" alt="Edit Icon" onclick="makeEditable()">
+        <img src="{% static 'images/settings.png' %}" alt="Setting Icon" >
       </div>
       <div class="doctor-info">
         <div class="profile-picture">
           <img class="avatar" src="{% static 'images/Doctor.PNG' %}" alt="Profile Picture">
-          <h2>{{ first_user.name}}</h2>
+          <h2>Doctor</h2>
           <div class="white-line"></div>
           <div class="field-textu">
             <label for="email">
-              <img src="{% static 'images/email.png' %}" alt="Email Icon"> Email: {{user_email}}
+              <img src="{% static 'images/email.png' %}" alt="Email Icon"> Email: doctor@gmail.com
             </label><br><br>
             <label for="phone">
-              <img src="{% static 'images/phone.png' %}" alt="Phone Icon"> Phone Number: {{first_user.phonenumber}}
+              <img src="{% static 'images/phone.png' %}" alt="Phone Icon"> Phone Number: 123456
             </label>
           </div>
         </div>
@@ -55,19 +109,19 @@
         <div class="profile-info">
           <div class="left-info">
             <div class="field-text">
-              <label for="nation">Nation:</label>
+              <label for="nation">Nation: VietNam</label>
               <input class="input-info" type="text" value="{{first_user.nation}}" readonly>
             </div>
             <div class="field-text">
-              <label for="graduated">Graduated From:</label>
+              <label for="graduated">Graduated From:DHBK</label>
               <input class="input-info" type="text" value="{{first_user.graduation}}" readonly>
             </div>
           </div>
 
           <div class="right-info">
             <div class="field-text">
-              <label for="birth">Birth:</label>
-              <input class="input-info" type="text" value="{{first_user.birth}}" readonly>
+              <label for="birth">Birth: <input class="input-info" type="text" value="hello" readonly></label>
+              
             </div>
             <div class="field-text">
               <div class="gender-selection">
@@ -79,13 +133,6 @@
                 <input type="radio" id="other" name="gender-selected" value="other">
                 <label for="other">Other</label><br>
               </div>
-              <!-- {% if first_user.gender == 1 %}
-              Nu
-              {% elif first_user.gender == 0 %}
-              Nam
-              {% else %}
-              Unknown
-              {% endif %} -->
             </div>
           </div>
         </div>

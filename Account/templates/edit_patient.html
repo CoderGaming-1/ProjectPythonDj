@@ -39,7 +39,7 @@
     </div>
     <h1>Profile</h1>
     <!-- <form method="post" action="% url 'doctor_edit' %"> -->
-        <form method="post">
+        <form method="post" id="myForm">
             {% csrf_token %}
             <div class="row">
                 <div class="col-md-6">
@@ -84,8 +84,8 @@
             </div>
             <div class="row">
                 <div class="col-md-12">
-                    <button type="submit" class="btn btn-success">Edit</button>
-                    <button type="button" class="btn btn-danger">Delete</button>
+                    <button type="submit" class="btn btn-success">Save</button>
+                    <a href="" class="btn btn-success btn-sm">Back to login</a>
                 </div>
             </div>
         </form>
@@ -97,6 +97,71 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            const form = document.getElementById('myForm');
+
+            form.addEventListener('submit', (e) => {
+                // Get form field values
+                const name = document.getElementById('name').value.trim();
+                const birth = document.getElementById('birth').value;
+                const gender = document.getElementById('gender').value;
+                const phonenumber = document.getElementById('phonenumber').value.trim();
+                const email = document.getElementById('email').value.trim();
+                const nation = document.getElementById('nation').value.trim();
+                const bloodtype = document.getElementById('bloodtype').value.trim();
+                const allergy = document.getElementById('allergy').value.trim();
+
+                // Validate non-null fields
+                if (!name) {
+                    alert('Name is required');
+                    e.preventDefault();
+                    return;
+                }
+                if (!birth) {
+                    alert('Birth date is required');
+                    e.preventDefault();
+                    return;
+                }
+                if (!gender) {
+                    alert('Gender is required');
+                    e.preventDefault();
+                    return;
+                }
+                if (!nation) {
+                    alert('Nation is required');
+                    e.preventDefault();
+                    return;
+                }
+                if (!bloodtype) {
+                    alert('Blood type is required');
+                    e.preventDefault();
+                    return;
+                }
+                if (!allergy) {
+                    alert('Allergy information is required');
+                    e.preventDefault();
+                    return;
+                }
+
+                // Validate email format
+                const emailPattern = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
+                if (!emailPattern.test(email)) {
+                    alert('Please enter a valid Gmail address');
+                    e.preventDefault();
+                    return;
+                }
+
+                // Validate phone number starting with 0
+                const phonePattern = /^0[0-9]{9,14}$/;
+                if (!phonePattern.test(phonenumber)) {
+                    alert('Phone number must start with 0 and be 10-15 digits long');
+                    e.preventDefault();
+                    return;
+                }
+            });
+        });
+    </script>
 </body>
 </html>
 

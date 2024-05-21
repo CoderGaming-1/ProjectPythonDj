@@ -15,7 +15,7 @@ import string
 from django.http import JsonResponse
 from django.http import HttpResponseRedirect
 from django.urls import reverse
-
+import pycountry
 def generate_random_password(length=12):
     characters = string.ascii_letters + string.digits
     password = ''.join(random.choice(characters) for _ in range(length))
@@ -52,9 +52,9 @@ def get_login_view(request):
     return render(request, 'login.html')
 
 def login_view(request):
-    # email = request.POST["email"]
-    # password = request.POST["password"]
-    # msg = None
+    email = request.POST["email"]
+    password = request.POST["password"]
+    msg = None
 
     if request.method == 'POST':    
         email = request.POST["email"]
@@ -62,7 +62,6 @@ def login_view(request):
         msg = None 
         # try:
         user = Accounts.objects.get(email=email)
-        
         # Verify the password
         if password == user.password: 
             user_real = user.iduser
@@ -75,6 +74,8 @@ def login_view(request):
                     return redirect(admin_url)
                 elif user_role.rolename == 'doctor':
                     return render(request,'doctor.html', {'id': user.iduser.id})
+                    # return render(request, 'Doctor/templates/base/header.html')
+                    return HttpResponse("Ok")
                 elif user_role.rolename == 'patient':
                     return render(request,'patient.html',{'id': user.iduser.id})
         else:
@@ -509,7 +510,7 @@ def admin_eda(request, idUser,idd):
         context = {
             'idUser': idUser,
             'idd': idd,
-            'user' : user,
+            'user': user,
         }
         return render(request,'admin_eda.html' ,context)
     elif (request.method == 'POST'):
@@ -519,26 +520,33 @@ def admin_eda(request, idUser,idd):
         birth = request.POST.get('birth')
         gender = request.POST.get('gender')
         phonenumber = request.POST.get('phonenumber')
-        description = request.POST.get('description')
+        #description = request.POST.get('description')
         graduation = request.POST.get('graduation')
         nation = request.POST.get('nation')
 
         # Update the user object with the new data
         user = Users.objects.get(id=idd)
+        acc = Accounts()
         user.accounts_set.update(email=email)
         user.name = name
         user.birth = birth
-        if gender == 'Nam':
+        if gender == 'Male':
             user.gender = True
-        elif gender == 'Nu':
+        elif gender == 'Female':
             user.gender = False
         user.phonenumber = phonenumber
-        user.description = description
+        #user.description = description
         user.graduation = graduation
         user.nation = nation
         user.updatedby = idUser
         user.updateddate = timezone.now()
         user.save()
+
+        acc.iduser = user
+        acc.email = email
+        acc.updatedby = idd
+        acc.updateddate = timezone.now()
+        acc.save()
 
         # Redirect to the admin_eda page
         return HttpResponseRedirect(reverse('admin_eda', args=(idUser, idd)))
@@ -563,7 +571,7 @@ def admin_ada(request,idUser):
         birth_date = parse_date(birth)
 
         # Convert gender to boolean
-        gender_bool = True if gender.lower() == 'Nam' else False
+        gender_bool = True if gender.lower() == 'Male' else False
 
         # Create or update the user and account
         user = Users(idrole_id=2)  # Set default role

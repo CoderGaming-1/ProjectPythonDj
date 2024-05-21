@@ -25,7 +25,7 @@ urlpatterns = [
     # path('admin_ada/<int:idUser>',views.admin_ada, name='admin_ada'),
 
     path('', views.get_login_view, name='login'),
-    path('postLogin/', views.login_view, name='login'),
+    path('loginPost/', views.login_view, name='login'),
     path('register/', views.get_register_view, name='register'),
     path('postRegister/', views.register_view, name='register'),
     path('admin/<int:idUser>', views.admin, name='admin'),

@@ -166,7 +166,13 @@
                                                 <td>{{ user.phonenumber }}</td>
                                                 <td>{{ user.nation }}</td>
                                                 <td>{{ user.graduation }}</td>
-                                                <td>{{ user.status }}</td>
+                                                <td>
+                                                    {% if user.status == 1 %}
+                                                      Active
+                                                    {% else %}
+                                                      Inactive
+                                                    {% endif %}
+                                                  </td>                                                  
                                                 <td>{{ user.accounts__email }}</td>
                                                 
                                                 <td>
