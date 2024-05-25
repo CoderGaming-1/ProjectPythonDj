@@ -150,6 +150,7 @@ def updateDoctor(request):
         genderStr = request.POST["gender-selected"]
         gender = genderStr == "female"
         newPassword = request.POST["newPass"]
+        print(newPassword)
 
         doctor = Users.objects.get(id=idDoctor)
         accoutDoctor = Accounts.objects.filter(iduser__id=idDoctor).first()
