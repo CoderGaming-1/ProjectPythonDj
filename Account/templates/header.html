@@ -1,94 +1,3 @@
-<!-- {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}{% endblock %}</title>
-    <link rel="stylesheet" href="{% static 'css/headerStyle.css' %}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-    <link rel="stylesheet" href="{% static 'css/slider.css' %}">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap">
-
-</head>
-<body>
-    <div class="wrapper">
-        <div class="contact-info">
-            <div><i class="fas fa-phone"></i> (+65) 11-1111-1111</div>
-            <div><i class="fas fa-envelope"></i> info@toothcare.com</div>
-            <div><i class="fas fa-clock"></i> Mon-Sat: 9:00 - 19:00</div>            
-        </div>
-        <div class="menu-bar">
-            <div class="logo">
-                <img class="logo-img" src="../../static/images/Logo.png" alt="ToothCare Logo">
-                <span class="logo-text">ToothCare</span>
-            </div>
-            <ul class="nav-links">
-                {% block content %}{% endblock %}
-            </ul>
-            <button class="button"><a href="{% url 'login' %}">Log Out</a><i class="fa-solid fa-arrow-right-from-bracket"></i></button>
-        </div>
-
-        <div class="doctor-info">
-            <div class="profile-picture">
-              <img src="{% static 'images/Doctor.PNG' %}" alt="Profile Picture">
-            </div>
-
-            <div class="profile-info">
-              <h1>{{  name}}</h1>
-
-              <div class="white-line"></div>
-
-              
-              <div class="field-textu">
-                <label for="email">
-                  <img src="{% static 'images/email.png' %}" alt="Email Icon"> Email: {{user_email}}
-                </label><br><br>
-                <label for="phone">
-                  <img src="{% static 'images/phone.png' %}" alt="Phone Icon"> Phone Number: {{ phonenumber}}
-                </label>
-              </div>
-              
-              <div class="field-text2">
-                <label for="id">ID No:    <span style="text-decoration: underline;">{{ idrole}}</span></label>
-              </div>
-              <br>
-              <br>
-              <div class="field-text2">
-                <label for="nation">Nation:     <span style="text-decoration: underline;">{{ nation}}</span></label>
-              </div><br><br>
-              <div class="field-text2">
-                <label for="graduated">Graduated From:    <span style="text-decoration: underline;">{{ graduation}}</span></label>
-              </div>
-              <div class="field-text3">
-                <label for="birth">Birth: <span style="text-decoration: underline;">{{ birth}}</span></label>
-              </div><br><br>
-              <div class="field-text3">
-                <label for="gender">Gender:<span style="text-decoration: underline;">
-                    {% if  gender == 1 %}
-                        Nu
-                    {% elif  gender == 0 %}
-                        Nam
-                    {% else %}
-                        Unknown
-                    {% endif %}
-                  </span>
-                </label>
-            </div>
-              <div class="field-text-setting">
-                <a href="{% url 'doctor_edit' idUser=id_acc %}">
-                  <img src="{% static 'images/edit.png' %}" alt="Edit Icon">
-              </a>
-              <img src="{% static 'images/settings.png' %}" alt="Setting Icon">
-            </div>
-            </div>  
-          </div>
-    </div>
-</body>
-</html> -->
-
-
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
@@ -174,13 +83,6 @@
                 <input type="radio" id="other" name="gender-selected" value="other">
                 <label for="other">Other</label><br>
               </div>
-              <!-- {% if first_user.gender == 1 %}
-              Nu
-              {% elif first_user.gender == 0 %}
-              Nam
-              {% else %}
-              Unknown
-              {% endif %} -->
             </div>
           </div>
         </div>

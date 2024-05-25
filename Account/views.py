@@ -15,6 +15,7 @@ import string
 from django.http import JsonResponse
 from django.http import HttpResponseRedirect
 from django.urls import reverse
+from django.template.defaultfilters import date
 import pycountry
 def generate_random_password(length=12):
     characters = string.ascii_letters + string.digits
@@ -220,7 +221,7 @@ def doctor_edit(request, idUser):
 
         user.name = name
         user.birth = birth
-        user.gender = True if gender == 'Male' else False
+        user.gender = True if gender == 'Female' else False
         user.phonenumber = phonenumber
         user.nation = nation
         user.graduation = graduation
@@ -313,10 +314,11 @@ def profile_patient(request, idUser):
         user = Users.objects.get(id=idUser)
         account = Accounts.objects.filter(iduser=idUser, status=1).first()
         medical = Medicalrecords.objects.filter(iduser = idUser).first()
+        birth_date = date(user.birth, "Y-m-d")
         context = {'name': user.name,
                 'phonenumber': user.phonenumber,
                 'nation': user.nation,
-                'birth': user.birth,
+                'birth': birth_date,
                 'gender': user.gender,
                 'email': account.email,
                 'idrole': user.idrole,
@@ -347,7 +349,7 @@ def profile_patient(request, idUser):
             # Update user instance
             user.name = name
             user.birth = birth
-            user.gender = True if gender == 'Male' else False
+            user.gender = True if gender == 'Female' else False
             user.phonenumber = phonenumber
             user.nation = nation
             user.updateddate = current_time
@@ -440,10 +442,14 @@ def admin_mda(request, idUser):
     users_list = Users.objects.filter(idrole=2).select_related('accounts').values(
         'id','name', 'birth', 'gender', 'phonenumber', 'nation', 'graduation', 'status', 'accounts__email'
     )
+    active_users = [user for user in users_list if user['status'] == 1]
+    inactive_users = [user for user in users_list if user['status'] == 0]
     # Create the context dictionary
     context = {
         'idUser': idUser,
         'users': users_list,
+        'active_users': active_users,
+        'inactive_users': inactive_users,
     }
     
     # Render the template with the context
@@ -530,9 +536,9 @@ def admin_eda(request, idUser,idd):
         user.accounts_set.update(email=email)
         user.name = name
         user.birth = birth
-        if gender == 'Male':
+        if gender == 'Female':
             user.gender = True
-        elif gender == 'Female':
+        elif gender == 'Male':
             user.gender = False
         user.phonenumber = phonenumber
         #user.description = description
@@ -571,7 +577,7 @@ def admin_ada(request,idUser):
         birth_date = parse_date(birth)
 
         # Convert gender to boolean
-        gender_bool = True if gender.lower() == 'Male' else False
+        gender_bool = True if gender.lower() == 'Female' else False
 
         # Create or update the user and account
         user = Users(idrole_id=2)  # Set default role

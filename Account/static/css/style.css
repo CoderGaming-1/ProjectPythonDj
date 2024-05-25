@@ -155,3 +155,7 @@ body {
   border-top-right-radius: 7px;
   border-bottom-right-radius: 7px;
 }
+.col-md-12 button{
+  width: 64px;
+  height: 32px;
+}

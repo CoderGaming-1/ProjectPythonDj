@@ -52,18 +52,6 @@
             </div>
             <ul class="sidebar-nav">
                 <li class="sidebar-item">
-                    <a href="{% url 'admin_profile' idUser %}" class="sidebar-link">
-                        <i class="lni lni-user"></i>
-                        <span>Profile</span>
-                    </a>
-                </li>
-                <li class="sidebar-item">
-                    <a href="{% url 'admin_task' idUser %}" class="sidebar-link">
-                        <i class="lni lni-agenda"></i>
-                        <span>Task</span>
-                    </a>
-                </li>
-                <li class="sidebar-item">
                     <ul id="auth" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
                         <li class="sidebar-item">
                             <a href="#" class="sidebar-link">Login</a>
@@ -73,28 +61,18 @@
                         </li>
                     </ul>
                 </li>
+    
                 <li class="sidebar-item">
-                    <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
-                        data-bs-target="#multi" aria-expanded="false" aria-controls="multi">
-                        <i class="lni lni-layout"></i>
-                        <span>Multi Level</span>
+                    <a href="{% url 'admin_mpa' idUser %}" class="sidebar-link">
+                        <i class="lni lni-agenda"></i>
+                        <span>Patient</span>
                     </a>
-                    <ul id="multi" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
-                        <li class="sidebar-item">
-                            <a href="#" class="sidebar-link collapsed" data-bs-toggle="collapse"
-                                data-bs-target="#multi-two" aria-expanded="false" aria-controls="multi-two">
-                                Account
-                            </a>
-                            <ul id="multi-two" class="sidebar-dropdown list-unstyled collapse">
-                                <li class="sidebar-item">
-                                    <a href="{% url 'admin_mda' idUser%}" class="sidebar-link">Doctor</a>
-                                </li>
-                                <li class="sidebar-item">
-                                    <a href="{% url 'admin_mpa' idUser%}" class="sidebar-link">Patient</a>
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
+                </li>
+                <li class="sidebar-item">
+                    <a href="{% url 'admin_mda' idUser %}" class="sidebar-link">
+                        <i class="lni lni-user"></i>
+                        <span>Doctor</span>
+                    </a>
                 </li>
                 <li class="sidebar-item">
                     <a href="{% url 'admin_setting' idUser %}" class="sidebar-link">
@@ -117,14 +95,14 @@
                 </form>
                 <div class="navbar-collapse collapse">
                     <ul class="navbar-nav ms-auto">
-                        <li class="nav-item dropdown">
+                        <!-- <li class="nav-item dropdown">
                             <a href="#" data-bs-toggle="dropdown" class="nav-icon pe-md-0">
                                 <img src="{% static 'images/account.png' %}" class="avatar img-fluid" alt="">
                             </a>
                             <div class="dropdown-menu dropdown-menu-end rounded">
                                 
                             </div>
-                        </li>
+                        </li> -->
                     </ul>
                 </div>
             </nav>
@@ -142,7 +120,7 @@
                                 <table class="table table-striped">
                                     <thead>
                                         <tr class="highlight">
-                                            <th scope="col">#</th>
+                                            <th scope="col"></th>
                                             <th scope="col">Name</th>
                                             <th scope="col">Birth</th>
                                             <th scope="col">Gender</th>
@@ -151,28 +129,22 @@
                                             <th scope="col">Graduation</th>
                                             <th scope="col">Status</th>
                                             <th scope="col">Email</th>
-                                          
                                             <th scope="col">Edit</th>
                                             <th scope="col">Block</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {% for user in users %}
+                                        <!-- Render Active Users -->
+                                        {% for user in active_users %}
                                             <tr>
                                                 <td>{{ forloop.counter }}</td>
                                                 <td>{{ user.name }}</td>
-                                                <td>{{ user.birth }}</td>
-                                                <td>{{ user.gender|yesno:"Male,Female" }}</td>
+                                                <td>{{ user.birth|date:"F d, Y" }}</td>
+                                                <td>{{ user.gender|yesno:"Female,Male" }}</td>
                                                 <td>{{ user.phonenumber }}</td>
                                                 <td>{{ user.nation }}</td>
                                                 <td>{{ user.graduation }}</td>
-                                                <td>
-                                                    {% if user.status == 1 %}
-                                                      Active
-                                                    {% else %}
-                                                      Inactive
-                                                    {% endif %}
-                                                  </td>                                                  
+                                                <td>Active</td>
                                                 <td>{{ user.accounts__email }}</td>
                                                 
                                                 <td>
@@ -182,15 +154,40 @@
                                                 </td>
                                                 
                                                 <td>
-                                                    <a href="#" class="btn btn-sm {% if user.status %}btn-danger{% else %}btn-success{% endif %} edit-btn"
-                                                       data-user-id="{{ user.id }}" data-status="{{ user.status }}">
-                                                       {% if user.status %}Able{% else %}Unable{% endif %}
-                                                    </a>
+                                                    <a href="#" class="btn btn-danger btn-sm edit-btn"
+                                                       data-user-id="{{ user.id }}" data-status="1">Disable</a>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                        
+                                        <!-- Render Inactive Users -->
+                                        {% for user in inactive_users %}
+                                            <tr>
+                                                <td>{{ forloop.counter }}</td>
+                                                <td>{{ user.name }}</td>
+                                                <td>{{ user.birth|date:"F d, Y" }}</td>
+                                                <td>{{ user.gender|yesno:"Female,Male" }}</td>
+                                                <td>{{ user.phonenumber }}</td>
+                                                <td>{{ user.nation }}</td>
+                                                <td>{{ user.graduation }}</td>
+                                                <td>Inactive</td>
+                                                <td>{{ user.accounts__email }}</td>
+                                                
+                                                <td>
+                                                    {% with idd=user.id %}
+                                                        <a href="{% url 'admin_eda' idUser idd %}" class="btn btn-warning btn-sm">Edit</a>
+                                                    {% endwith %}
+                                                </td>
+                                                
+                                                <td>
+                                                    <a href="#" class="btn btn-success btn-sm edit-btn"
+                                                       data-user-id="{{ user.id }}" data-status="0">Enable</a>
                                                 </td>
                                             </tr>
                                         {% endfor %}
                                     </tbody>
                                 </table>
+                                
                                 
                             </div>
                         </div>
@@ -240,9 +237,9 @@
                         if (response.status === 'success') {
                             var btn = $('.edit-btn[data-user-id="' + userId + '"]');
                             if (newStatus) {
-                            btn.removeClass('btn-success').addClass('btn-danger').text('Able');
+                            btn.removeClass('btn-danger').addClass('btn-success').text('Able');
                         } else {
-                            btn.removeClass('btn-danger').addClass('btn-success').text('Unable');
+                            btn.removeClass('btn-success').addClass('btn-danger').text('Unable');
                         }
                             // Update the data-status attribute with the new status
                             btn.data('status', newStatus);
