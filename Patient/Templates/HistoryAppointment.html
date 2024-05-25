@@ -22,13 +22,20 @@
         border-radius: 5px;
         flex: 0 1 calc(25% - 10px); 
         margin: 5px;
+        border: 2px solid #F4F4F4;
     }
     .box:hover {
-        background-color: #A2BEC1; 
+        /* background-color: #A2BEC1;  */
         cursor: pointer;
+        border: 2px solid #42AEB1;
     }
     .box.clicked {
-        background-color: #A2BEC1;
+        /* background-color: #A2BEC1; */
+        border: 2px solid #42AEB1;
+    }
+    .gray-box {
+        background-color: gray;
+        border: 2px solid gray;
     }
     .imgIntroPatient{
         width: 80px;
@@ -50,10 +57,10 @@
         background-color: #A2BEC1; 
         cursor: pointer;
     }
-    #showDrInfo {
+    #showDetailAppoinment {
         display: none;
     }
-    #showDrInfo.visible {
+    #showDetailAppoinment.visible {
         display: block;
         background-color: #42AEB1; 
         width: 30%; 
@@ -62,12 +69,23 @@
         border-radius: 5px; 
         margin-left: 10px; 
         margin-right: 25px;
+        margin-bottom: 20px;
     }
 </style>
+<script>
+    // Lấy dữ liệu từ context và chuyển đổi sang định dạng JavaScript
+    var errormsg = "{{ errormsg|escapejs }}";
+
+    // Kiểm tra nếu có dữ liệu và hiển thị thông báo alert
+    if (errormsg && errormsg !== 'None') {
+        alert(errormsg);
+    }
+</script>
 
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         var boxes = document.querySelectorAll(".box");
+        var showDetailAppoinmentDiv = document.getElementById("showDetailAppoinment");
 
         boxes.forEach(function(box) {
             box.addEventListener("click", function() {
@@ -80,6 +98,20 @@
 
                 // Cập nhật giá trị của trường input ẩn
                 document.getElementById("idMeetingInput").value = meetigId;
+
+                // Lấy info detail từ thuộc tính data-
+                var doctorName = this.getAttribute("data-doctorname");
+                var appoitime = this.getAttribute("data-appoitime");
+                var status = this.getAttribute("data-status");
+                var symptom = this.getAttribute("data-symptom");
+
+                // Cập nhật nội dung của <p id="nameDr">
+                document.getElementById("doctorname").textContent = doctorName;
+                document.getElementById("time").textContent = appoitime;
+                document.getElementById("status").textContent = status;
+                document.getElementById("symptom").textContent = symptom;
+
+                showDetailAppoinmentDiv.classList.add("visible");
             });
         });
     });
@@ -90,14 +122,14 @@
             alert("Please choose 1 appointment to cancel.");
             return false; // Ngăn form được gửi đi nếu có trường trống
         }
-        return true;
+        return confirm("Are you sure you want to approve this appointment?");
     }
 </script>
 
 <div class="intro">
-    <h2 style="color: #185C79; margin-left: 10px; margin-bottom: 0px;">Hi, {{ name }}</h2>
+    <h2 style="color: #185C79; margin-left: 10px; margin-bottom: 0px; font-size: 26px; margin-top: 40px;">Hi, {{ name }}</h2>
     <div style="display: flex; padding: 10px;">
-        <p style="width: 70%; color: #ffffff; font-size: 28px; padding-right: 50px; text-align: justify;">
+        <p style="width: 70%; color: #ffffff; font-size: 24px; padding-right: 50px; text-align: justify;">
             We use the latest technology and techniques to provide the most effective care possible, and we are dedicated to helping you achieve optimal oral health. With our customized treatment plans, you can enjoy a healthy, beautiful smile for life.
         </p>
         <!-- <img class="imgIntroPatient" src="../static/images/imgIntroPatient.png" alt="ToothCareimgIntroPatient"> -->
@@ -114,14 +146,29 @@
     </div>
     <div name="SchedulesPart" style="display: flex; flex-wrap: wrap; margin-bottom: 20px; padding-left: 25px;">
         {% for meeting in meetings %}
-            <div class="box" id="{{ meeting.id }}">
+            <div class="box {% if meeting.idschedule.startshift_tz  < current_time %} gray-box{% endif %}" id="{{ meeting.id }}"
+                data-doctorname="{{ meeting.idschedule.iduser.name }}"
+                data-appoitime="{{ meeting.idschedule.formatted_startshift }}"
+                data-status="{{ meeting.statusDesc }}"
+                data-symptom="{{ meeting.symptom }}">
                 <p style="font-size: 16px; margin: 30px 20px 10px 20px">{{ meeting.idschedule.formatted_startshift }}</p>
                 <h4 style="margin-left: 20px; margin-bottom: 40px;">{{meeting.symptom}}</h4>
             </div>
         {% endfor %}
     </div>
     <input type="text" name="idMeeting" id="idMeetingInput" hidden>
-    <input type="submit" class="submitForm" value="Cancel Appointment" onclick="return validateForm();">
+    <input style="margin-bottom: 20px;" type="submit" class="submitForm" value="Cancel Appointment" onclick="return validateForm();">
 </form>
+
+<div id="showDetailAppoinment" >
+    <h2 style="margin-top: 40px; margin-bottom: 10px;">Doctor Name</h2>
+    <p style="font-size: 18px;" id="doctorname"></p>
+    <h2 style="margin-top: 30px; margin-bottom: 10px;">Appointment Time</h2>
+    <p style="font-size: 18px;"  id="time"></p>
+    <h2 style="margin-top: 30px; margin-bottom: 10px;">Status</h2>
+    <p style="font-size: 18px;"  id="status"></p>
+    <h2 style="margin-top: 30px; margin-bottom: 10px;">Symptom</h2>
+    <p style="font-size: 18px; margin-bottom: 30px;"  id="symptom"></p>
+</div>
 </div>
 {% endblock content %}

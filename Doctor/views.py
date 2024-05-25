@@ -163,8 +163,9 @@ def updateDoctor(request):
         
         if newPassword:
             accoutDoctor.password = newPassword
-            accoutDoctor.updatedby =idDoctor
+            accoutDoctor.updatedby = idDoctor
             accoutDoctor.updateddate = timezone.localtime(timezone.now())
+            accoutDoctor.save()
 
         previous_page = request.META.get('HTTP_REFERER', '/')
         return HttpResponseRedirect(previous_page)
