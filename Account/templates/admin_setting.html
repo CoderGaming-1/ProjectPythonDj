@@ -52,18 +52,6 @@
             </div>
             <ul class="sidebar-nav">
                 <li class="sidebar-item">
-                    <a href="{% url 'admin_profile' idUser %}" class="sidebar-link">
-                        <i class="lni lni-user"></i>
-                        <span>Profile</span>
-                    </a>
-                </li>
-                <li class="sidebar-item">
-                    <a href="{% url 'admin_task' idUser %}" class="sidebar-link">
-                        <i class="lni lni-agenda"></i>
-                        <span>Task</span>
-                    </a>
-                </li>
-                <li class="sidebar-item">
                     <ul id="auth" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
                         <li class="sidebar-item">
                             <a href="#" class="sidebar-link">Login</a>
@@ -73,32 +61,21 @@
                         </li>
                     </ul>
                 </li>
+    
                 <li class="sidebar-item">
-                    <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
-                        data-bs-target="#multi" aria-expanded="false" aria-controls="multi">
-                        <i class="lni lni-layout"></i>
-                        <span>Multi Level</span>
+                    <a href="{% url 'admin_mpa' idUser %}" class="sidebar-link">
+                        <i class="lni lni-agenda"></i>
+                        <span>Patient</span>
                     </a>
-                    <ul id="multi" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
-                        <li class="sidebar-item">
-                            <a href="#" class="sidebar-link collapsed" data-bs-toggle="collapse"
-                                data-bs-target="#multi-two" aria-expanded="false" aria-controls="multi-two">
-                                Account
-                            </a>
-                            <ul id="multi-two" class="sidebar-dropdown list-unstyled collapse">
-                                <li class="sidebar-item">
-                                    <a href="{% url 'admin_mda' idUser%}" class="sidebar-link">Doctor</a>
-                                </li>
-                                <li class="sidebar-item">
-                                    <a href="{% url 'admin_mpa' idUser%}" class="sidebar-link">Patient</a>
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
                 </li>
-
                 <li class="sidebar-item">
-                    <a href="#" class="sidebar-link">
+                    <a href="{% url 'admin_mda' idUser %}" class="sidebar-link">
+                        <i class="lni lni-user"></i>
+                        <span>Doctor</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="{% url 'admin_setting' idUser %}" class="sidebar-link">
                         <i class="lni lni-cog"></i>
                         <span>Setting</span>
                     </a>
@@ -117,7 +94,7 @@
 
                 </form>
                 <div class="navbar-collapse collapse">
-                    <ul class="navbar-nav ms-auto">
+                    <!-- <ul class="navbar-nav ms-auto">
                         <li class="nav-item dropdown">
                             <a href="#" data-bs-toggle="dropdown" class="nav-icon pe-md-0">
                                 <img src="{% static 'images/account.png' %}" class="avatar img-fluid" alt="">
@@ -126,7 +103,7 @@
                                 
                             </div>
                         </li>
-                    </ul>
+                    </ul> -->
                 </div>
             </nav>
             <main class="content px-3 py-4">
