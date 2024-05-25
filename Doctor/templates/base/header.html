@@ -78,68 +78,130 @@
       </div>
 
       <ul class="nav-links">
-        <li><a href="{% url 'home' %}">Home</a></li>
+        <!-- <li><a href="{% url 'home' %}">Home</a></li> -->
         <li><a href="{% url 'schedule' %}">Schedule</a></li>
         <li><a href="{% url 'appointment' %}">Appointment</a></li>
       </ul>
       <button class="button">Log out<i class="fa-solid fa-arrow-right-from-bracket"></i></button>
     </div>
-    <div class="doctor-container">
-      <div class="action-form">
-        <button type="button" id="save-button" style="display:none;">Save</button>
-        <button type="button" onclick="changeProfilePicture()" id="change-profile-button" style="display:none;">Change Profile Picture</button>
-        <img src="{% static 'images/edit.png' %}" alt="Edit Icon" onclick="makeEditable()">
-        <img src="{% static 'images/settings.png' %}" alt="Setting Icon" >
-      </div>
-      <div class="doctor-info">
-        <div class="profile-picture">
-          <img class="avatar" src="{% static 'images/Doctor.PNG' %}" alt="Profile Picture">
-          <h2>Doctor</h2>
-          <div class="white-line"></div>
-          <div class="field-textu">
-            <label for="email">
-              <img src="{% static 'images/email.png' %}" alt="Email Icon"> Email: doctor@gmail.com
-            </label><br><br>
-            <label for="phone">
-              <img src="{% static 'images/phone.png' %}" alt="Phone Icon"> Phone Number: 123456
-            </label>
-          </div>
+    <form action="{% url 'updateDoctor'%}" method="post" enctype="multipart/form-data" id="update-form" onsubmit="return saveUpdate()">
+      {% csrf_token %}
+      <div class="doctor-container">
+        <div class="action-form">
+          <img src="{% static 'images/edit.png' %}" title="Update" alt="Edit Icon" onclick="updateInfo()">
         </div>
-
-        <div class="profile-info">
-          <div class="left-info">
-            <div class="field-text">
-              <label for="nation">Nation: VietNam</label>
-              <input class="input-info" type="text" value="{{first_user.nation}}" readonly>
-            </div>
-            <div class="field-text">
-              <label for="graduated">Graduated From:DHBK</label>
-              <input class="input-info" type="text" value="{{first_user.graduation}}" readonly>
+        <div class="doctor-info">
+          <input type="hidden" name="idDoctor" value="{{doctor.id}}">
+          <div class="profile-picture">
+            <img id="avatar-preview" class="avatar" src="{% static 'images/Doctor.PNG' %}" alt="Profile Picture">
+            <h2>{{doctor.name}}</h2>
+            <div class="white-line"></div>
+            <div class="field-textu">
+              <label for="email">
+                <img src="{% static 'images/email.png' %}" alt="Email Icon">{{accountDoctor.email}}
+              </label><br><br>
+              <label for="phone">
+                <img src="{% static 'images/phone.png' %}" alt="Phone Icon">{{doctor.phonenumber}}
+              </label>
             </div>
           </div>
 
-          <div class="right-info">
-            <div class="field-text">
-              <label for="birth">Birth: <input class="input-info" type="text" value="hello" readonly></label>
-              
+          <div class="profile-info">
+            <div class="left-info">
+              <div class="field-text">
+                <label for="nation">Nation:</label>
+                <input class="input-info" type="text" value="{{doctor.nation}}" readonly>
+              </div>
+              <div class="field-text">
+                <label for="graduated">Graduated From:</label>
+                <input class="input-info" type="text" value="{{doctor.graduation}}" readonly>
+              </div>
+              <div class="update-password" id="update-password">
+                <div class="field-text" id="field-text-edit-pass1">
+                  <input id="currentPass" type="hidden" name="currentPassword" value="{{accountDoctor.password}}">
+                  <label for="password">Current password:</label>
+                  <input id="inputCurrentPass" class="input-info" name="currentPass" type="password">
+                </div>
+                <div class="field-text" id="field-text-edit-pass2">
+                  <label for="newPass">New password:</label>
+                  <input id="newPass" class="input-info" name="newPass" type="password">
+                </div>
+              </div>
             </div>
-            <div class="field-text">
-              <div class="gender-selection">
-                <label for="gender">Gender:</label>            
-                <input type="radio" id="male" name="gender-selected" value="male">
-                <label for="male">Male</label><br>
-                <input type="radio" id="female" name="gender-selected" value="female">
-                <label for="female">Female</label><br>
-                <input type="radio" id="other" name="gender-selected" value="other">
-                <label for="other">Other</label><br>
+
+            <div class="right-info">
+              <div class="able-update" id="able-update">
+                <div class="field-text">
+                  <label for="birth">Birth:</label>
+                  <input name="birthDoctor" class="input-info-update" type="date" value="{{ doctor.birth|date:'Y-m-d' }}" readonly>
+                </div>
+                <div class="field-text">
+                  <div class="gender-selection">
+                    <label for="gender">Gender:</label>
+                    <input type="radio" id="male" name="gender-selected" value="male" {% if not doctor.gender%} checked
+                      {%endif %} disabled>
+                    <label for="male">Male</label><br>
+                    <input type="radio" id="female" name="gender-selected" value="female" {% if doctor.gender%} checked
+                      {%endif %} disabled>
+                    <label for="female">Female</label><br>
+                  </div>
+                </div>
+                <div class="note">
+                  <button id="update-info1" type="button" style="margin-left: 20px;" onclick="cancelUpdate()">Cancel</button>
+                  <button id="update-info" type="submit">Save</button>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </form>
+
   </div>
-  </div>
+  <script>
+    function updateInfo() {
+      document.getElementById('update-info1').style.display = 'block';
+      document.getElementById('update-info').style.display = 'block';
+      document.getElementById("field-text-edit-pass1").style.display = 'flex';
+      document.getElementById("field-text-edit-pass2").style.display = 'flex';
+      var inputs = document.querySelectorAll('.input-info-update, input[type="radio"]');
+      inputs.forEach(function (input) {
+        input.removeAttribute('readonly');
+        input.removeAttribute('disabled');
+      });
+    }
+
+    function saveUpdate() {
+      var inputCurrentPass = document.getElementById("inputCurrentPass").value;
+      var currentPass = document.getElementById("currentPass").value;
+      var newPass = document.getElementById("newPass").value;
+      if (inputCurrentPass !== "") {
+        if (inputCurrentPass !== currentPass) {
+          alert("Current password you entered is not correct");
+          return false;
+        } else {
+          if (newPass === "") {
+            alert("Please enter your new password");
+            return false;
+          }
+          return true;
+        }
+      }
+      return true;
+    }
+
+    function cancelUpdate() {
+      document.getElementById('update-info').style.display = 'none';
+      document.getElementById('update-info1').style.display = 'none';
+      document.getElementById("field-text-edit-pass1").style.display = 'none';
+      document.getElementById("field-text-edit-pass2").style.display = 'none';
+      var inputs = document.querySelectorAll('.input-info-update, input[type="radio"]');
+      inputs.forEach(function (input) {
+        input.setAttribute('readonly', true);
+        input.setAttribute('disabled', true);
+      });
+    }
+  </script>
 </body>
 
 </html>

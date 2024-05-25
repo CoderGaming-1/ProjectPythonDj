@@ -73,10 +73,12 @@ body {
   width: 90%;
   font-size: 16px;
   margin-bottom:45px;
+  background-color: white;
 }
 
-.input-field:focus{
+.input-field:focus, .input-field:active{
   outline: none;
+  background-color: white;
 }
 .row{
   display: flex;
