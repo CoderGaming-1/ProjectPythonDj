@@ -1,41 +1,68 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}{% endblock %}</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}{% endblock %}</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap">
     <link rel="stylesheet" href="{% static 'css/headerStyle.css' %}">
     <link href="{% static 'app/css/style.css' %}" rel="stylesheet" />
-    <link rel="stylesheet" href="{% static 'css/slider.css' %}">
-
-    
-    <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{% static 'css/slider.css' %}">
+<style>
+  /* Style for Save button */
+  #save-button, #change-profile-button {
+      display: none;
+      background-color: #4CAF50; /* Green */
+      border: none;
+      color: white;
+      padding: 10px 20px;
+      text-align: center;
+      text-decoration: none;
+      font-size: 16px;
+      cursor: pointer;
+      border-radius: 8px;
+      margin-right: 5px;
+  }
+
+  /* Style for Change Profile Picture button */
+  #change-profile-button {
+      background-color: #FFD700; /* Yellow */
+      padding: 5px 10px; /* Smaller padding */
+      font-size: 14px; /* Smaller font size */
+  }
+</style>
+
+
 </head>
+
 <body>
-    <div class="wrapper">
-        <div class="contact-info">
-            <div><i class="fas fa-phone"></i> (+65) 11-1111-1111</div>
-            <div><i class="fas fa-envelope"></i> info@toothcare.com</div>
-            <div><i class="fas fa-clock"></i> Mon-Sat: 9:00 - 19:00</div>            
-        </div>
-        <div class="menu-bar">
-            <div class="logo">
-                <img class="logo-img" src="{% static 'images/Logo.png' %}" alt="ToothCare Logo">
-                <span class="logo-text">ToothCare</span>
-            </div>
-            <ul class="nav-links">
-                <li><span class="nav-item">Home</span></li>
-                <li><span class="nav-item">Service</span></li>
-            </ul>
-            <button class="button"><a href="{% url 'logout' %}">Log Out</a><i class="fa-solid fa-arrow-right-from-bracket"></i></button>
-        </div>
+  <div class="wrapper">
+    <div class="contact-info">
+      <div><i class="fas fa-phone"></i> (+65) 11-1111-1111</div>
+      <div><i class="fas fa-envelope"></i> info@toothcare.com</div>
+      <div><i class="fas fa-clock"></i> Mon-Sat: 9:00 - 19:00</div>
     </div>
-    
+    <div class="menu-bar">
+      <div class="logo">
+        <img class="logo-img" src="{% static 'images/Logo.png' %}" alt="ToothCare Logo">
+        <span class="logo-text">ToothCare</span>
+      </div>
+
+      <ul class="nav-links">
+        <!-- <li><a href="{% url 'home' %}">Home</a></li> -->
+        <li><a href="">Profile</a></li>
+        <li><a href="{% url 'BookAppointment' %}">Book Appointment</a></li>
+        <li><a href="{% url 'HistoryAppointment' %}">Your Appointments</a></li>
+      </ul>
+      <form action="" method="post"></form>
+      <button class="button">Log out<i class="fa-solid fa-arrow-right-from-bracket"></i></button>
+    </div>
+  </div>
     <!-- <form method="post" action="% url 'doctor_edit' %"> -->
         <form method="post" id="myForm" class="main-content" style="margin: 0 20px;">
             <h1 style="color: #A2BEC1;;">Profile</h1>
@@ -89,8 +116,7 @@
 
                 </div>
             </div>
-        </form>
-        
+        </form>    
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
@@ -98,70 +124,5 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', (event) => {
-            const form = document.getElementById('myForm');
-
-            form.addEventListener('submit', (e) => {
-                // Get form field values
-                const name = document.getElementById('name').value.trim();
-                const birth = document.getElementById('birth').value;
-                const gender = document.getElementById('gender').value;
-                const phonenumber = document.getElementById('phonenumber').value.trim();
-                const email = document.getElementById('email').value.trim();
-                const nation = document.getElementById('nation').value.trim();
-                const bloodtype = document.getElementById('bloodtype').value.trim();
-                const allergy = document.getElementById('allergy').value.trim();
-
-                // Validate non-null fields
-                if (!name) {
-                    alert('Name is required');
-                    e.preventDefault();
-                    return;
-                }
-                if (!birth) {
-                    alert('Birth date is required');
-                    e.preventDefault();
-                    return;
-                }
-                if (!gender) {
-                    alert('Gender is required');
-                    e.preventDefault();
-                    return;
-                }
-                if (!nation) {
-                    alert('Nation is required');
-                    e.preventDefault();
-                    return;
-                }
-                if (!bloodtype) {
-                    alert('Blood type is required');
-                    e.preventDefault();
-                    return;
-                }
-                if (!allergy) {
-                    alert('Allergy information is required');
-                    e.preventDefault();
-                    return;
-                }
-
-                // Validate email format
-                const emailPattern = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
-                if (!emailPattern.test(email)) {
-                    alert('Please enter a valid Gmail address');
-                    e.preventDefault();
-                    return;
-                }
-
-                // Validate phone number starting with 0
-                const phonePattern = /^0[0-9]{9,14}$/;
-                if (!phonePattern.test(phonenumber)) {
-                    alert('Phone number must start with 0 and be 10-15 digits long');
-                    e.preventDefault();
-                    return;
-                }
-            });
-        });
-    </script>
 </body>
 </html>

@@ -260,61 +260,6 @@ def doctor_edit(request, idUser):
         return render(request, 'header.html', context)
         # Get current time
     return render(request, 'edit.html', context)
-    
-# def edit_view(request, idUser):
-#     current_time = timezone.now()
-#     #Save into database
-#     if request.method == 'POST':
-#         name = request.POST.get('name')
-#         birth = request.POST.get('birth')
-#         gender = request.POST.get('gender')
-#         phonenumber = request.POST.get('phonenumber')
-#         nation = request.POST.get('nation')
-#         graduation = request.POST.get('graduation')
-#         # Get current time
-#         current_time = timezone.now()
-
-#         # Create a new user instance and save it to the database
-#         user = Users(
-#             name=name,
-#             birth=birth,
-#             gender=True if gender == 'Male' else False,
-#             phonenumber=phonenumber,
-#             nation=nation,
-#             graduation=graduation,
-#             updateddate=current_time,
-#         )
-#         user.save()
-
-#         user = Users.objects.get(id=idUser)
-#         account = Accounts.objects.filter(iduser=idUser, status=1).first()
-#         context = {
-#                'name': user.name,
-#                'phonenumber': user.phonenumber,
-#                'nation': user.nation,
-#                'graduation': user.graduation,
-#                'birth': user.birth,
-#                'gender': user.gender,
-#                'user_email': account.email,
-#                'idrole': user.idrole,
-#                }
-#         return render(request, 'header.html', context)
-#     return render(request, 'edit.html')
-    
-        # Create a new user instance and save it to the database
-        # user = Users(
-        #     name=name,
-        #     birth=birth,
-        #     gender=True if gender == 'Male' else False,
-        #     phonenumber=phonenumber,
-        #     nation=nation,
-        #     graduation=graduation,
-        #     createddate=current_time,
-        #     updateddate=current_time
-        # )
-        # user.save()
-        # return redirect('header.html')
-    return render(request, 'edit.html')
 
 def profile_patient(request):
     if request.method != 'POST':
