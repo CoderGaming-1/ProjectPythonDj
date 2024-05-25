@@ -1,0 +1,258 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Operating</title>
+    <link href="https://cdn.lineicons.com/4.0/lineicons.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'css/style1.css' %}">
+    <style>
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        .form-label {
+            display: block;
+            margin-bottom: .5rem;
+        }
+        .form-control {
+            width: 100%;
+            padding: .5rem;
+            margin-bottom: .5rem;
+        }
+        .btn-save {
+            display: block;
+            margin-left: auto;
+            background-color: green;
+            color: white;
+            border: none;
+            padding: .5rem 1rem;
+            cursor: pointer;
+        }
+        .btn-save:hover {
+            background-color: darkgreen;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrapper">
+        <aside id="sidebar">
+            <div class="d-flex">
+                <button class="toggle-btn" type="button">
+                    <i class="lni lni-grid-alt"></i>
+                </button>
+                <div class="sidebar-logo">
+                    <a href="#">Admin</a>
+                </div>
+            </div>
+            <ul class="sidebar-nav">
+                <li class="sidebar-item">
+                    <ul id="auth" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
+                        <li class="sidebar-item">
+                            <a href="#" class="sidebar-link">Login</a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a href="#" class="sidebar-link">Register</a>
+                        </li>
+                    </ul>
+                </li>
+    
+                <li class="sidebar-item">
+                    <a href="{% url 'admin_mpa' idUser %}" class="sidebar-link">
+                        <i class="lni lni-agenda"></i>
+                        <span>Patient</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="{% url 'admin_mda' idUser %}" class="sidebar-link">
+                        <i class="lni lni-user"></i>
+                        <span>Doctor</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="{% url 'admin_setting' idUser %}" class="sidebar-link">
+                        <i class="lni lni-cog"></i>
+                        <span>Setting</span>
+                    </a>
+                </li>
+            </ul>
+            <div class="sidebar-footer">
+                <a href="{% url 'login' %}" class="sidebar-link">
+                    <i class="lni lni-exit"></i>
+                    <span>Logout</span>
+                </a>
+            </div>
+        </aside>
+        <div class="main">
+            <nav class="navbar navbar-expand px-4 py-3">
+                <form action="#" class="d-none d-sm-inline-block">
+
+                </form>
+                <div class="navbar-collapse collapse">
+                    <ul class="navbar-nav ms-auto">
+                        <!-- <li class="nav-item dropdown">
+                            <a href="#" data-bs-toggle="dropdown" class="nav-icon pe-md-0">
+                                <img src="{% static 'images/account.png' %}" class="avatar img-fluid" alt="">
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-end rounded">
+                                
+                            </div>
+                        </li> -->
+                    </ul>
+                </div>
+            </nav>
+            <main class="content px-3 py-4">
+                <div class="container-fluid">
+                    <div class="mb-3">
+                        <h3 class="fw-bold fs-4 my-3">
+                            CREATE NEW DOCTOR ACCOUNT
+                        </h3>
+                        <form method="post" onsubmit="return validateForm()">
+                            {% csrf_token %}
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="email" class="form-label">Email:</label>
+                                        <input type="text" class="form-control" id="email" name="email" placeholder="Email" onblur="validateEmail()">
+                                        <div id="email-feedback" class="invalid-feedback"></div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="name" class="form-label">Name:</label>
+                                        <input type="text" class="form-control" id="name" name="name" placeholder="Name Of User">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="birth" class="form-label">Birth:</label>
+                                        <input type="date" class="form-control" id="birth" name="birth" placeholder="Date Of Birth">
+                                    </div>                                    
+                                    <div class="mb-3">
+                                        <label for="gender" class="form-label">Gender:</label>
+                                        <input type="text" class="form-control" id="gender" name="gender" placeholder="Gender">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="phonenumber" class="form-label">Phone Number:</label>
+                                        <input type="text" class="form-control" id="phonenumber" name="phonenumber" placeholder="Phone Number">
+                                    </div>
+                                    <!-- <div class="mb-3">
+                                        <label for="description" class="form-label">Description:</label>
+                                        <input type="text" class="form-control" id="description" name="description" placeholder="Description">
+                                    </div> -->
+                                    <div class="mb-3">
+                                        <label for="graduation" class="form-label">Graduation:</label>
+                                        <input type="text" class="form-control" id="graduation" name="graduation" placeholder="Graduation">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="nation" class="form-label">Nation:</label>
+                                        <input type="text" class="form-control" id="nation" name="nation" placeholder="Country/Region">
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Create</button>
+                            <a href="{% url 'admin_mda' idUser %}" class="btn btn-secondary">Return</a>
+                        </form>
+                        
+                    </div>
+                </div>
+            </main>
+            <footer class="footer">
+                <div class="container-fluid">
+                    <div class="row text-body-secondary">
+                        <div class="col-6 text-start ">
+                        </div>
+                        <div class="col-6 text-end text-body-secondary d-none d-md-block">
+                            <ul class="list-inline mb-0">
+                            
+                                
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="{% static 'js/script.js' %}"></script>
+    <script>
+        function validateNonNullFields() {
+    var fields = ['name', 'birth', 'gender', 'graduation', 'nation'];
+    var valid = true;
+
+    fields.forEach(function(field) {
+        var input = document.getElementById(field);
+        if (!input.value.trim()) {
+            input.classList.add('is-invalid');
+            valid = false;
+        } else {
+            input.classList.remove('is-invalid');
+            input.classList.add('is-valid');
+        }
+    });
+
+    return valid;
+}
+
+function validateEmail() {
+    var emailInput = document.getElementById('email');
+    var emailValue = emailInput.value;
+    
+    var emailPattern = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i;
+
+    if (emailPattern.test(emailValue)) {
+        emailInput.classList.remove('is-invalid');
+        emailInput.classList.add('is-valid');
+        document.getElementById('email-feedback').textContent = '';
+        return true;
+    } else {
+        emailInput.classList.remove('is-valid');
+        emailInput.classList.add('is-invalid');
+        document.getElementById('email-feedback').textContent = 'Please enter a valid email address.';
+        return false;
+    }
+}
+
+function validatePhoneNumber() {
+    var phoneInput = document.getElementById('phonenumber');
+    var phoneValue = phoneInput.value;
+    
+    var phonePattern = /^0[0-9]+$/;
+
+    if (phonePattern.test(phoneValue)) {
+        phoneInput.classList.remove('is-invalid');
+        phoneInput.classList.add('is-valid');
+        return true;
+    } else {
+        phoneInput.classList.remove('is-valid');
+        phoneInput.classList.add('is-invalid');
+        return false;
+    }
+}
+
+function validateForm() {
+    var valid = true;
+
+    if (!validateNonNullFields()) {
+        valid = false;
+    }
+
+    if (!validateEmail()) {
+        valid = false;
+    }
+
+    if (!validatePhoneNumber()) {
+        valid = false;
+    }
+
+    return valid;
+}
+
+    </script>
+</body>
+
+</html>

@@ -131,7 +131,7 @@ function loadDayView(date) {
           for (const schedule of schedules) {
             const startShift = new Date(schedule.startshift).toISOString().slice(0, -1);
             const newStartShift = new Date(startShift)
-            debugger
+            // debugger
             if (timeSlotDate.getTime() === newStartShift.getTime()) {
               
               if (schedule.status === 1) {
@@ -146,7 +146,7 @@ function loadDayView(date) {
               timeSlot.setAttribute('data-Symptom', schedule.symptom || '');
 
               timeSlot.addEventListener('click', () => {
-                // console.log('dateeeeeee: ' + timeSlotDate);
+                console.log('dateeeeeee: ' + timeSlotDate);
                 var NamePatient = event.currentTarget.getAttribute("data-NamePatient");
                 var BloodType = event.currentTarget.getAttribute("data-BloodType");
                 var Allergy = event.currentTarget.getAttribute("data-Allergy");

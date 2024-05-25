@@ -1,5 +1,7 @@
 {% load static %}
 {% include "base/header.html" %}
+{% load tz %}
+{% get_current_timezone as TIME_ZONE %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -55,7 +57,9 @@
                         <!-- <input type="hidden" class="idMeeting" id="idMeeting{{ forloop.counter }}" name="idMeeting" value="{{meeting.id}}"> -->
                         <td>{{ meeting.idpatient__name }}</td>
                         <td>{{ meeting.idpatient__phonenumber }}</td>
-                        <td>{{ meeting.idschedule__startshift }}</td>
+                        <!-- <td>{{ meeting.idschedule__startshift }}</td> -->
+                        <!-- <td>{{ meeting.idschedule__startshift|date:"Y-m-d H:i" }}</td> -->
+                        <td>{{ meeting.idschedule__startshift|date:"Y-m-d H:i" }}</td>
                         <td>
                             <p class="status-meeting 
                             {% if meeting.idschedule__startshift > nowTime %}                
@@ -80,21 +84,21 @@
                             {% if meeting.idschedule__startshift > nowTime %}
                             {% if meeting.status == 'Pending' %}
                             <button type="submit" class="action-form-btn" name="action-form-btn" data-tooltip="Approve"
-                                value="Approve" onclick="return confirmApprove()">
+                                title="Approve" value="Approve" onclick="return confirmApprove()">
                                 <i class="fa-solid fa-check"></i></button>
                             <button type="submit" class="action-form-btn" name="action-form-btn" data-tooltip="Reject"
-                                value="Reject" onclick="return confirmReject()">
+                                title="Reject" value="Reject" onclick="return confirmReject()">
                                 <i class="fa-solid fa-xmark"></i></button>
                             {% endif %}
                             {% if meeting.status == 'Active' %}
-                            <button type="button" id="cancelBtn" data-tooltip="Cancel" data-idmeeting="{{meeting.id}}" onclick="openModalReason()">
+                            <button type="button" id="cancelBtn" data-tooltip="Cancel" data-idmeeting="{{meeting.id}}" title="Cancel" onclick="openModalReason()">
                                 <i class="fa-solid fa-xmark"></i>
                             </button>
                             {% endif %}
                             {% endif %}
-                            <button type="button" class="action-form-btn" data-tooltip="Info">
+                            <button type="button" class="meeting-detail" data-tooltip="Info" title="Info">
                                 <a href="{% url 'appointmentDetail' meeting.id %}">
-                                    <i class="fa-solid fa-info"></i>
+                                    <i class="fa-solid fa-info" style="color: white;"></i>
                                 </a>
                             </button>
                         </td>

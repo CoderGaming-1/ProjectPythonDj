@@ -1,0 +1,222 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Operating</title>
+    <link href="https://cdn.lineicons.com/4.0/lineicons.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'css/style1.css' %}">
+    <style>
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        .form-label {
+            display: block;
+            margin-bottom: .5rem;
+        }
+        .form-control {
+            width: 100%;
+            padding: .5rem;
+            margin-bottom: .5rem;
+        }
+        .btn-save {
+            display: block;
+            margin-left: auto;
+            background-color: green;
+            color: white;
+            border: none;
+            padding: .5rem 1rem;
+            cursor: pointer;
+        }
+        .btn-save:hover {
+            background-color: darkgreen;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrapper">
+        <aside id="sidebar">
+            <div class="d-flex">
+                <button class="toggle-btn" type="button">
+                    <i class="lni lni-grid-alt"></i>
+                </button>
+                <div class="sidebar-logo">
+                    <a href="#">Admin</a>
+                </div>
+            </div>
+            <ul class="sidebar-nav">
+                <li class="sidebar-item">
+                    <ul id="auth" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
+                        <li class="sidebar-item">
+                            <a href="#" class="sidebar-link">Login</a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a href="#" class="sidebar-link">Register</a>
+                        </li>
+                    </ul>
+                </li>
+    
+                <li class="sidebar-item">
+                    <a href="{% url 'admin_mpa' idUser %}" class="sidebar-link">
+                        <i class="lni lni-agenda"></i>
+                        <span>Patient</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="{% url 'admin_mda' idUser %}" class="sidebar-link">
+                        <i class="lni lni-user"></i>
+                        <span>Doctor</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="{% url 'admin_setting' idUser %}" class="sidebar-link">
+                        <i class="lni lni-cog"></i>
+                        <span>Setting</span>
+                    </a>
+                </li>
+            </ul>
+            <div class="sidebar-footer">
+                <a href="{% url 'login' %}" class="sidebar-link">
+                    <i class="lni lni-exit"></i>
+                    <span>Logout</span>
+                </a>
+            </div>
+        </aside>
+        <div class="main">
+            <nav class="navbar navbar-expand px-4 py-3">
+                <form action="#" class="d-none d-sm-inline-block">
+
+                </form>
+                <div class="navbar-collapse collapse">
+                    <ul class="navbar-nav ms-auto">
+                        <!-- <li class="nav-item dropdown">
+                            <a href="#" data-bs-toggle="dropdown" class="nav-icon pe-md-0">
+                                <img src="{% static 'images/account.png' %}" class="avatar img-fluid" alt="">
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-end rounded">
+                                
+                            </div>
+                        </li> -->
+                    </ul>
+                </div>
+            </nav>
+            <main class="content px-3 py-4">
+                <div class="container-fluid">
+                    <div class="mb-3">
+                        <h3 class="fw-bold fs-4 my-3">Account Management
+                        </h3>
+                        <div class="row">
+                            <div class="col-12">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr class="highlight">
+                                            <th scope="col"></th>
+                                            <th scope="col">Name</th>
+                                            <th scope="col">Email</th>
+                                            <th scope="col">Birth</th>
+                                            <th scope="col">Gender</th>
+                                            <th scope="col">PhoneNumber</th>
+                                            <th scope="col">Nation</th>
+                                            <th scope="col">Status</th> 
+                                            <th scope="col">Block</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for user in users %}
+                                            <tr>
+                                                <td>{{ forloop.counter }}</td>
+                                                <td>{{ user.name }}</td>
+                                                <td>{{ user.accounts__email }}</td>
+                                                <td>{{ user.birth }}</td>
+                                                <td>{{ user.gender|yesno:"Female,Male" }}</td>
+                                                <td>{{ user.phonenumber }}</td>
+                                                <td>{{ user.nation }}</td>
+                                                <td>{{ user.status }}</td>
+                                                <td>
+                                                    <a href="#" class="btn btn-sm {% if user.status %}btn-danger{% else %}btn-success{% endif %} edit-btn"
+                                                       data-user-id="{{ user.id }}" data-status="{{ user.status }}">
+                                                       {% if user.status %}Able{% else %}Unable{% endif %}
+                                                    </a>
+                                                </td>
+                                                
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+            <footer class="footer">
+                <div class="container-fluid">
+                    <div class="row text-body-secondary">
+                        <div class="col-6 text-start ">
+                        </div>
+                        <div class="col-6 text-end text-body-secondary d-none d-md-block">
+                            <ul class="list-inline mb-0">
+                            
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="{% static 'js/script.js' %}"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('.edit-btn').click(function (e) {
+                e.preventDefault();
+                var userId = $(this).data('user-id');
+                var status = $(this).data('status');
+    
+                // Toggle the status value (0 -> 1, 1 -> 0)
+                var newStatus = status ? 0 : 1;
+    
+                // Make the AJAX request to update the status
+                $.ajax({
+                    type: 'POST',
+                    url: '{% url "update_user_status" %}',
+                    data: {
+                        'userId': userId,
+                        'newStatus': newStatus,
+                        'csrfmiddlewaretoken': '{{ csrf_token }}'
+                    },
+                    success: function (response) {
+                        if (response.status === 'success') {
+                            var btn = $('.edit-btn[data-user-id="' + userId + '"]');
+                            if (newStatus) {
+                                btn.removeClass('btn-danger').addClass('btn-success');
+                            } else {
+                                btn.removeClass('btn-success').addClass('btn-danger');
+                            }
+                            // Update the data-status attribute with the new status
+                            btn.data('status', newStatus);
+                            location.reload();
+                        } else {
+                            console.error('Error:', response.message);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error:', xhr.responseText);
+                    }
+                });
+            });
+        });
+    </script>
+    
+
+</body>
+
+</html>

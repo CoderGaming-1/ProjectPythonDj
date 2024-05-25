@@ -1,0 +1,54 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'css/headerStyle.css' %}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="{% static 'css/slider.css' %}">
+</head>
+
+<style>
+  @import url(https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap);
+  ::-webkit-scrollbar {
+      display: none;
+  }
+  body {
+      font-family: 'Roboto', sans-serif;
+      -ms-overflow-style: none;
+      /* IE và Edge */
+      scrollbar-width: none;
+      /* Firefox */
+  }
+</style>
+
+<body>
+  <div class="wrapper">
+    <div class="contact-info">
+      <div><i class="fas fa-phone"></i> (+65) 11-1111-1111</div>
+      <div><i class="fas fa-envelope"></i> toothcareclinicinfo@gmail.com</div>
+      <div><i class="fas fa-clock"></i> Everyday: 9:00 - 19:00</div>
+    </div>
+    <div class="menu-bar">
+      <div class="logo">
+        <img class="logo-img" src="{% static 'images/Logo.png' %}" alt="ToothCare Logo">
+        <span class="logo-text">ToothCare</span>
+      </div>
+
+      <ul class="nav-links">
+        <li><a href="{% url 'profile_patient' %}">Profile</a></li>
+        <li><a href="{% url 'BookAppointment' %}">Book Appointment</a></li>
+        <li><a href="{% url 'HistoryAppointment' %}">Your Appointments</a></li>
+      </ul>
+      <button class="button"><a href="{% url 'logout' %}">Log Out</a><i class="fa-solid fa-arrow-right-from-bracket"></i></button>
+    </div>
+    
+  </div>
+  </div>
+</body>
+
+</html>

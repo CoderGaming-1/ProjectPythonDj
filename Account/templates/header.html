@@ -1,95 +1,90 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}{% endblock %}</title>
-    <link rel="stylesheet" href="{% static 'css/headerStyle.css' %}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-    <link rel="stylesheet" href="{% static 'css/slider.css' %}">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'css/headerStyle.css' %}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="{% static 'css/slider.css' %}">
+  <script>
+    function makeEditable() {
+        // Enable input fields
+        var inputFields = document.querySelectorAll('.input-info');
+        inputFields.forEach(function(el) {
+            el.removeAttribute('readonly');
+        });
+        
+        // Enable radio buttons
+        var radioButtons = document.querySelectorAll('.gender-selection input[type="radio"]');
+        radioButtons.forEach(function(el) {
+            el.removeAttribute('disabled');
+        });
+
+        // Show save button
+        var saveButton = document.getElementById('save-button');
+        if (saveButton) {
+            saveButton.style.display = 'block';
+        }
+
+        // Show change profile picture button
+        var changeProfileButton = document.querySelector('.doctor-container .action-form button:nth-child(2)');
+        if (changeProfileButton) {
+            changeProfileButton.style.display = 'block';
+        }
+    }
+</script>
+<style>
+  /* Style for Save button */
+  #save-button, #change-profile-button {
+      display: none;
+      background-color: #4CAF50; /* Green */
+      border: none;
+      color: white;
+      padding: 10px 20px;
+      text-align: center;
+      text-decoration: none;
+      font-size: 16px;
+      cursor: pointer;
+      border-radius: 8px;
+      margin-right: 5px;
+  }
+
+  /* Style for Change Profile Picture button */
+  #change-profile-button {
+      background-color: #FFD700; /* Yellow */
+      padding: 5px 10px; /* Smaller padding */
+      font-size: 14px; /* Smaller font size */
+  }
+</style>
+
 
 </head>
+
 <body>
-    <div class="wrapper">
-        <div class="contact-info">
-            <div><i class="fas fa-phone"></i> (+65) 11-1111-1111</div>
-            <div><i class="fas fa-envelope"></i> info@toothcare.com</div>
-            <div><i class="fas fa-clock"></i> Mon-Sat: 9:00 - 19:00</div>            
-        </div>
-        <div class="menu-bar">
-            <div class="logo">
-                <img class="logo-img" src="../../static/images/Logo.png" alt="ToothCare Logo">
-                <span class="logo-text">ToothCare</span>
-            </div>
-            <ul class="nav-links">
-                <!-- <li><a href="#">Home</a></li>
-                <li><a href="#">Schedule</a></li>
-                <li><a href="#">Appointment</a></li> -->
-                {% block content %}{% endblock %}
-            </ul>
-            <button class="button">Log out<i class="fa-solid fa-arrow-right-from-bracket"></i></button>
-        </div>
-
-        <div class="doctor-info">
-            <div class="profile-picture">
-              <img src="{% static 'images/Doctor.PNG' %}" alt="Profile Picture">
-            </div>
-
-            <div class="profile-info">
-              <h1>{{  name}}</h1>
-              <!-- <div class="line">
-                <img src="{% static 'images/Line.png' %}" alt="Line Icon">
-              </div> -->
-              <div class="white-line"></div>
-
-              
-              <div class="field-textu">
-                <label for="email">
-                  <img src="{% static 'images/email.png' %}" alt="Email Icon"> Email: {{user_email}}
-                </label><br><br>
-                <label for="phone">
-                  <img src="{% static 'images/phone.png' %}" alt="Phone Icon"> Phone Number: {{ phonenumber}}
-                </label>
-              </div>
-              
-              <div class="field-text2">
-                <label for="id">ID No:    <span style="text-decoration: underline;">{{ idrole}}</span></label>
-              </div>
-              <br>
-              <br>
-              <div class="field-text2">
-                <label for="nation">Nation:     <span style="text-decoration: underline;">{{ nation}}</span></label>
-              </div><br><br>
-              <div class="field-text2">
-                <label for="graduated">Graduated From:    <span style="text-decoration: underline;">{{ graduation}}</span></label>
-              </div>
-              <div class="field-text3">
-                <label for="birth">Birth: <span style="text-decoration: underline;">{{ birth}}</span></label>
-              </div><br><br>
-              <div class="field-text3">
-                <label for="gender">Gender:<span style="text-decoration: underline;">
-                    {% if  gender == 1 %}
-                        Nu
-                    {% elif  gender == 0 %}
-                        Nam
-                    {% else %}
-                        Unknown
-                    {% endif %}
-                  </span>
-                </label>
-            </div>
-              <div class="field-text-setting">
-              <img src="{% static 'images/edit.png' %}" alt="Edit Icon">
-              <img src="{% static 'images/settings.png' %}" alt="Setting Icon">
-            </div>
-            <!-- <div class="field-text-line">
-              <img src="{% static 'images/Line.png' %}" alt="Line Icon">
-            </div> -->
-            </div>  
-          </div>
+  <div class="wrapper">
+    <div class="contact-info">
+      <div><i class="fas fa-phone"></i> (+65) 11-1111-1111</div>
+      <div><i class="fas fa-envelope"></i> toothcareclinicinfo@gmail.com</div>
+      <div><i class="fas fa-clock"></i> Everyday: 9:00 - 19:00</div>
     </div>
+    <div class="menu-bar">
+      <div class="logo">
+        <img class="logo-img" src="{% static 'images/Logo.png' %}" alt="ToothCare Logo">
+        <span class="logo-text">ToothCare</span>
+      </div>
+
+      <ul class="nav-links">
+        <!-- <li><a href="{% url 'home' %}">Home</a></li> -->
+        <li><a href="{% url 'schedule' %}">Schedule</a></li>
+        <li><a href="{% url 'appointment' %}">Appointment</a></li>
+      </ul>
+      <button class="button"><a href="{% url 'logout' %}" style="color: white;">Log Out</a><i class="fa-solid fa-arrow-right-from-bracket"></i></button>
+    </div>
+  </div>
 </body>
+
 </html>

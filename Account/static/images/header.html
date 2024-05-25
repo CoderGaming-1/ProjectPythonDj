@@ -13,8 +13,8 @@
     <div class="wrapper">
         <div class="contact-info">
             <div><i class="fas fa-phone"></i> (+65) 11-1111-1111</div>
-            <div><i class="fas fa-envelope"></i> info@toothcare.com</div>
-            <div><i class="fas fa-clock"></i> Mon-Sat: 9:00 - 19:00</div>            
+            <div><i class="fas fa-envelope"></i> toothcareclinicinfo@gmail.com</div>
+            <div><i class="fas fa-clock"></i> Everyday: 9:00 - 19:00</div>            
         </div>
         <div class="menu-bar">
             <div class="logo">
@@ -27,7 +27,7 @@
                 <li><a href="{% url 'schedule' %}">Schedule</a></li>
                 <li><a href="{% url 'appointment' %}">Appointment</a></li>
             </ul>
-            <button class="button">Log out<i class="fa-solid fa-arrow-right-from-bracket"></i></button>
+            <button class="button"><a href="{% url 'logout' %}" style="color: white;">Log Out</a><i class="fa-solid fa-arrow-right-from-bracket"></i></button>
         </div>
         <div class="doctor-info">
             <div class="profile-picture">

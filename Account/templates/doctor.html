@@ -14,15 +14,15 @@
     <link rel="stylesheet" href="{%static 'app/css/owl.carousel.min.css' %}">
     <link rel="stylesheet" href="{%static 'app/css/owl.theme.default.min.css' %}">
 
-    <!-- Bootstrap CSS -->
+
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
     <div class="wrapper">
         <div class="contact-info">
             <div><i class="fas fa-phone"></i> (+65) 11-1111-1111</div>
-            <div><i class="fas fa-envelope"></i> info@toothcare.com</div>
-            <div><i class="fas fa-clock"></i> Mon-Sat: 9:00 - 19:00</div>            
+            <div><i class="fas fa-envelope"></i> toothcareclinicinfo@gmail.com</div>
+            <div><i class="fas fa-clock"></i> Everyday: 9:00 - 19:00</div>            
         </div>
         <div class="menu-bar">
             <div class="logo">
@@ -33,7 +33,7 @@
                 <li><span class="nav-item">Home</span></li>
                 <li><span class="nav-item">Service</span></li>
             </ul>
-            <button class="button">Log out<i class="fa-solid fa-arrow-right-from-bracket"></i></button>
+            <button class="button"><a href="{% url 'logout' %}" style="color: white;">Log Out</a><i class="fa-solid fa-arrow-right-from-bracket"></i></button>
         </div>
     
         <!-- Bootstrap Carousel -->
