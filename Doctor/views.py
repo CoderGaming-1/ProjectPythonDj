@@ -137,6 +137,7 @@ def updateDoctor(request):
         genderStr = request.POST["gender-selected"]
         gender = genderStr == "female"
         newPassword = request.POST["newPass"]
+        print(newPassword)
 
         doctor = Users.objects.get(id=idDoctor)
         accoutDoctor = Accounts.objects.filter(iduser__id=idDoctor).first()
@@ -152,6 +153,7 @@ def updateDoctor(request):
             accoutDoctor.password = newPassword
             accoutDoctor.updatedby =idDoctor
             accoutDoctor.updateddate = timezone.localtime(timezone.now())
+            accoutDoctor.save()
 
         previous_page = request.META.get('HTTP_REFERER', '/')
         return HttpResponseRedirect(previous_page)

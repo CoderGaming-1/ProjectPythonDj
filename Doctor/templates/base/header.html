@@ -81,7 +81,7 @@
               <div class="able-update" id="able-update">
                 <div class="field-text">
                   <label for="birth">Birth:</label>
-                  <input name="birthDoctor" class="input-info-update" type="date" value="{{ doctor.birth|date:'Y-m-d' }}" readonly>
+                  <input name="birthDoctor" class="input-info-update" type="date" value="{{ doctor.birth|date:'Y-m-d' }}" style="width: 160px;" readonly>
                 </div>
                 <div class="field-text">
                   <div class="gender-selection">
@@ -107,6 +107,13 @@
 
   </div>
   <script>
+    var initialBirth, initialGender;
+
+    window.onload = function() {
+      // Store initial values on page load
+      initialBirth = document.getElementById('birthDoctor').value;
+      initialGender = document.querySelector('input[name="gender-selected"]:checked').value;
+    };
     function updateInfo() {
       document.getElementById('update-info1').style.display = 'block';
       document.getElementById('update-info').style.display = 'block';
@@ -148,6 +155,11 @@
         input.setAttribute('readonly', true);
         input.setAttribute('disabled', true);
       });
+      if (initialGender === 'male') {
+        document.getElementById('male').checked = true;
+      } else {
+        document.getElementById('female').checked = true;
+      }
     }
   </script>
 </body>
