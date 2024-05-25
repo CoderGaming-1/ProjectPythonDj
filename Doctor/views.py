@@ -15,7 +15,7 @@ import base64
 import datetime as dt
 from datetime import datetime, timedelta, time
 
-iduser = 4
+iduser = 5
 class DateTimeEncoder(DjangoJSONEncoder):
     def default(self, obj):
         if isinstance(obj, dt.datetime):
@@ -29,7 +29,7 @@ def index(request):
 
 
 def schedule(request):
-    iduser = 4
+    # iduser = 4
     # doctor = Users.objects.filter(status=1).get(id=iduser)
     # accoutDoctor = Accounts.objects.filter(iduser__id=iduser).first()
     # schedules = Schedules.objects.filter(iduser__id=iduser).select_related('iduser')
@@ -129,28 +129,37 @@ def schedule(request):
 #         # return JsonResponse({'status': 'success'})
 #     except Exception as e:
 #         return HttpResponse(f'Error: {str(e)}')
+    
 def updateDoctor(request):
     try:
         idDoctor = request.POST["idDoctor"]
         birth = datetime.strptime(request.POST.get("birthDoctor"), "%Y-%m-%d")
         genderStr = request.POST["gender-selected"]
         gender = genderStr == "female"
+        newPassword = request.POST["newPass"]
 
         doctor = Users.objects.get(id=idDoctor)
+        accoutDoctor = Accounts.objects.filter(iduser__id=idDoctor).first()
         
-        doctor.birth = timezone.make_aware(birth)
-        doctor.gender = gender
-        doctor.updatedby =idDoctor
-        doctor.updateddate = timezone.localtime(timezone.now())
-        doctor.save()
+        if birth or gender: 
+            doctor.birth = timezone.make_aware(birth)
+            doctor.gender = gender
+            doctor.updatedby =idDoctor
+            doctor.updateddate = timezone.localtime(timezone.now())
+            doctor.save()
         
+        if newPassword:
+            accoutDoctor.password = newPassword
+            accoutDoctor.updatedby =idDoctor
+            accoutDoctor.updateddate = timezone.localtime(timezone.now())
+
         previous_page = request.META.get('HTTP_REFERER', '/')
         return HttpResponseRedirect(previous_page)
     except Exception as e:
         return HttpResponse(f"Error: {str(e)}")
 def createSchedule(request):
     try:
-        iduser = 4
+        # iduser = 4
         startShift = request.POST["startShift"]
         endShift = request.POST["endShift"]
         createdDate = datetime.now()
