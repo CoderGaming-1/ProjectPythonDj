@@ -32,7 +32,7 @@ def get_page(request):
         current_time = timezone.now()
         tz = pytz.timezone('Asia/Ho_Chi_Minh')
         current_time_tz_vn = current_time.astimezone(tz)
-        schedules = Schedules.objects.select_related('iduser').filter(status=1, startshift__gt=current_time_tz_vn)
+        schedules = Schedules.objects.select_related('iduser').filter(status=1, startshift__gt=current_time_tz_vn).order_by('-startshift')
 
         for schedule in schedules:
                 # Định dạng trường startshift của mỗi phần tử trong schedules

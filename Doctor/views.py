@@ -193,14 +193,14 @@ def createSchedule(request):
             return HttpResponse(f"Date parsing error: {ve}")
         
         doctor_instance = Users.objects.get(pk=iduser)
-        
+        # return HttpResponse(str(starttime + timedelta(hours=7)))
         current_time = starttime
         while current_time < endtime:
             if time(7, 0) <= current_time.time() <= time(19, 0):
-                if not Schedules.objects.filter(iduser=doctor_instance, startshift=current_time, status=1).exists():
+                if not Schedules.objects.filter(iduser=doctor_instance, startshift=(current_time+ timedelta(hours=7)), status=1).exists():
                     Schedules.objects.create(
                         iduser=doctor_instance, 
-                        startshift=current_time, 
+                        startshift=current_time + timedelta(hours=7), 
                         status=1, 
                         createdby=iduser, 
                         createddate=createdDate

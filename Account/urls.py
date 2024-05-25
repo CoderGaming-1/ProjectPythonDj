@@ -44,4 +44,5 @@ urlpatterns = [
     path('update_doctor_status/', views.update_doctor_status, name='update_doctor'),
     path('admin_eda/<int:idUser>/<int:idd>',views.admin_eda, name='admin_eda'),
     path('admin_ada/<int:idUser>',views.admin_ada, name='admin_ada'),
+    path('logout', views.log_out, name='logout'),
 ]

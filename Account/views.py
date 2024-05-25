@@ -617,3 +617,8 @@ def admin_ada(request,idUser):
         'idUser':idUser,
         }
         return render(request, 'admin_ada.html',context)
+    
+def log_out(request):
+    if 'iduser' in request.session:
+        del request.session['iduser']
+    return redirect('login')
