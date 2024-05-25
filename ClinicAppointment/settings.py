@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-z)u$0e#gkxumi@)5b@y##&#b=n*hh3rk5j7uj259*5yelmk!6^
 DEBUG = False
 
 ALLOWED_HOSTS = ['*'] #['django-clinic-appointment.onrender.com', 'pblsignasl.database.windows.net']
-CSRF_TRUSTED_ORIGINS = ['*']
+CSRF_TRUSTED_ORIGINS = ['https://clinicappointment-latest.onrender.com', 'http://127.0.0.1:8000/']
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
 
