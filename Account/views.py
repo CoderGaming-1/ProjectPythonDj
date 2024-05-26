@@ -500,7 +500,8 @@ def admin_eda(request, idUser,idd):
         # acc.save()
 
         # Redirect to the admin_eda page
-        return HttpResponseRedirect(reverse('admin_eda', args=(idUser, idd)))
+        #return HttpResponseRedirect(reverse('admin_eda', args=(idUser, idd)))
+        return render(request, "admin_eda.html", args=(idUser, idd))
     
 def admin_ada(request,idUser):
     # context = {
@@ -522,7 +523,7 @@ def admin_ada(request,idUser):
         birth_date = parse_date(birth)
 
         # Convert gender to boolean
-        gender_bool = True if gender.lower() == 'Female' else False
+        gender_bool = True if gender.lower() == 'female' else False
 
         # Create or update the user and account
         user = Users(idrole_id=2)  # Set default role
