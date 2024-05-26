@@ -5,19 +5,44 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{% block title %}{% endblock %}</title>
+  <title>Profile</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap">
-    <link rel="stylesheet" href="{% static 'css/headerStyle.css' %}">
-    <link href="{% static 'app/css/style.css' %}" rel="stylesheet" />
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="{% static 'css/slider.css' %}">
-<style>
-  /* Style for Save button */
-  #save-button, #change-profile-button {
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap">
+  <link rel="stylesheet" href="{% static 'css/headerStyle.css' %}">
+  <link href="{% static 'app/css/style.css' %}" rel="stylesheet">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="{% static 'css/slider.css' %}">
+  <style>
+    .message-container {
+      margin: 20px 0;
+      padding: 10px;
+      border-radius: 5px;
+    }
+
+    .message {
+      padding: 10px;
+      margin-bottom: 10px;
+      border-radius: 5px;
+      font-size: 14px;
+      color: #fff;
+    }
+
+    .message.error {
+      background-color: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+
+    .message.success {
+      background-color: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+
+    #save-button, #change-profile-button {
       display: none;
-      background-color: #4CAF50; /* Green */
+      background-color: #4CAF50;
       border: none;
       color: white;
       padding: 10px 20px;
@@ -27,17 +52,14 @@
       cursor: pointer;
       border-radius: 8px;
       margin-right: 5px;
-  }
+    }
 
-  /* Style for Change Profile Picture button */
-  #change-profile-button {
-      background-color: #FFD700; /* Yellow */
-      padding: 5px 10px; /* Smaller padding */
-      font-size: 14px; /* Smaller font size */
-  }
-</style>
-
-
+    #change-profile-button {
+      background-color: #FFD700;
+      padding: 5px 10px;
+      font-size: 14px;
+    }
+  </style>
 </head>
 
 <body>
@@ -52,9 +74,7 @@
         <img class="logo-img" src="{% static 'images/Logo.png' %}" alt="ToothCare Logo">
         <span class="logo-text">ToothCare</span>
       </div>
-
       <ul class="nav-links">
-        <!-- <li><a href="{% url 'home' %}">Home</a></li> -->
         <li><a href="">Profile</a></li>
         <li><a href="{% url 'BookAppointment' %}">Book Appointment</a></li>
         <li><a href="{% url 'HistoryAppointment' %}">Your Appointments</a></li>
@@ -63,66 +83,101 @@
       <button class="button"><a href="{% url 'logout' %}" style="color: white;">Log Out</a><i class="fa-solid fa-arrow-right-from-bracket"></i></button>
     </div>
   </div>
-    <!-- <form method="post" action="% url 'doctor_edit' %"> -->
-        <form method="post" id="myForm" class="main-content" style="margin: 0 20px;">
-            <h1 style="color: #A2BEC1;;">Profile</h1>
-            {% csrf_token %}
-            <div class="row" >
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label for="name">Name</label>
-                        <input type="text" class="form-control" id="name" name="name" value="{{ name }}">
-                    </div>
-                    <div class="form-group">
-                        <label for="birth">Birth</label>
-                        <input type="date" class="form-control" id="birth" name="birth" value="{{ birth }}">
-                    </div>
-                    <div class="form-group">
-                        <label for="gender">Gender</label>
-                        <select class="form-control" id="gender" name="gender">
-                            <option value="Male" {% if gender == 'Male' %}selected{% endif %}>Male</option>
-                            <option value="Female" {% if gender == 'Female' %}selected{% endif %}>Female</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="phonenumber">Phone Number</label>
-                        <input type="text" class="form-control" id="phonenumber" name="phonenumber" value="{{ phonenumber }}">
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label for="email">Gmail</label>
-                        <input type="email" class="form-control" id="email" name="email" value="{{ email }}">
-                    </div>
-                    <div class="form-group">
-                        <label for="nation">Nation</label>
-                        <input type="text" class="form-control" id="nation" name="nation" value="{{ nation }}">
-                    </div>
-                    <div class="form-group">
-                        <label for="bloodtype">BloodType</label>
-                        <input type="text" class="form-control" id="bloodtype" name="bloodtype" value="{{ bloodtype }}">
-                    </div>
-                    <div class="form-group">
-                        <label for="allergy">Allergy</label>
-                        <input type="text" class="form-control" id="allergy" name="allergy" value="{{ allergy }}">
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <button type="submit" class="btn btn-success" style="width: 80px;">Save</button>
-                    <!-- <a href="" class="btn btn-success btn-sm">Back to login</a> -->
-                    <button type="button" class="btn btn-success" style="width: 80px;">Cancel</button>
 
-                </div>
-            </div>
-        </form>    
+  <div class="container">
+    <form method="post" class="main-content" style="margin: 0 20px;">
+      {% csrf_token %}
+      <h1 style="color: #A2BEC1;">Profile</h1>
+      {% if messages %}
+        <div class="message-container">
+          {% for message in messages %}
+            <div class="message {{ message.tags }}">{{ message }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="name">Name</label>
+            <input type="text" class="form-control" id="name" name="name" value="{{ name }}">
+          </div>
+          <div class="form-group">
+            <label for="birth">Birth</label>
+            <input type="date" class="form-control" id="birth" name="birth" value="{{ birth }}">
+          </div>
+          <div class="form-group">
+            <label for="gender">Gender</label>
+            <select class="form-control" id="gender" name="gender">
+              <option value="Male" {% if gender == 'Male' %}selected{% endif %}>Male</option>
+              <option value="Female" {% if gender == 'Female' %}selected{% endif %}>Female</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="phonenumber">Phone Number</label>
+            <input type="text" class="form-control" id="phonenumber" name="phonenumber" value="{{ phonenumber }}">
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="email">Gmail</label>
+            <input type="email" class="form-control" id="email" name="email" value="{{ email }}">
+          </div>
+          <div class="form-group">
+            <label for="nation">Nation</label>
+            <input type="text" class="form-control" id="nation" name="nation" value="{{ nation }}">
+          </div>
+          <div class="form-group">
+            <label for="bloodtype">BloodType</label>
+            <input type="text" class="form-control" id="bloodtype" name="bloodtype" value="{{ bloodtype }}">
+          </div>
+          <div class="form-group">
+            <label for="allergy">Allergy</label>
+            <input type="text" class="form-control" id="allergy" name="allergy" value="{{ allergy }}">
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <button type="submit" class="btn btn-success" style="width: 80px;">Save</button>
+          <button type="button" class="btn btn-success" style="width: 80px;">Cancel</button>
+        </div>
+      </div>
+    </form>
+    
+    <!-- Change Password Form -->
+    <form method="post" class="main-content" style="margin: 20px 20px;">
+      {% csrf_token %}
+      <h1 style="color: #A2BEC1;">Change Password</h1>
+      <div class="form-group">
+        <label for="email">Your email</label>
+        <input type="email" class="form-control" id="email" name="email" value="{{ email }}" placeholder="{{ email }}" readonly>
+      </div>
+      <div class="form-group">
+        <label for="currentpassword">Current Password</label>
+        <input type="password" class="form-control" id="currentpassword" name="currentpassword" required>
+      </div>
+      <div class="form-group">
+        <label for="newpassword">New Password</label>
+        <input type="password" class="form-control" id="newpassword" name="newpassword" required>
+      </div>
+      <div class="form-group">
+        <label for="confirmpassword">Confirm New Password</label>
+        <input type="password" class="form-control" id="confirmpassword" name="confirmpassword" required>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <button type="submit" class="btn btn-success" style="width: 80px;">Save</button>
+          <button type="button" class="btn btn-success" style="width: 80px;">Cancel</button>
+        </div>
+      </div>
+    </form>
+  </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>

@@ -3,44 +3,50 @@
 <html>
 
 <head>
-	<title>Sign Up New Account</title>
-	<link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600&display=swap" rel="stylesheet">
-	<link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <title>Sign Up New Account</title>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 
 <body>
-	<div class="background-divider">
-		<div class="background-left">
-			<div class="left-side">
-				<!-- <div class="login-form white-bg"> -->
-				<form id="form" method="post" action="{% url 'register' %}">
-					{% csrf_token %}
-					<div class="title">Sign Up</div>
-					<input type="email" name="email" class="input-field" placeholder="Email Address">
-					<!-- <input type="password" name="password" class="input-field" placeholder="Password"> -->
-					<div class="row">
-						<input type="password" name="password" class="input-field" placeholder="Password" required>
-					</div>
-					<div class="row" style="margin-top: 48px;">
-						<input type="password" name="confirm_password" class="input-field" placeholder="Confirm Password">
-					</div>
-					<div class="links-and-buttons" style="margin-top: 60px;">
-						<button type="submit" class="sign-in-button">Sign Up</button>
-						<div class="white-line"></div>
-						<a href="{% url 'login' %}" class="sign-up">Back to login</a>
-					</div>
-				</form>
-			</div>
-		</div>
-		<div class="background-right">
-		<div class="right-side">
-			<div class="image-container">
-				<img class="dentist-image" src="{% static 'images/Dentist.PNG' %}" alt="Dentist image">
-			</div>
-		</div>
-	</div>
-	</div>
-
+    <div class="background-divider">
+        <div class="background-left">
+            <div class="left-side">
+                <form id="form" method="post" action="{% url 'register' %}">
+                    {% csrf_token %}
+                    <div class="title">Sign Up</div>
+                    {% if messages %}
+                        <div class="message-container">
+                            {% for message in messages %}
+                                <div class="message {{ message.tags }}">{{ message }}</div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    <input type="email" name="email" class="input-field" placeholder="Email Address">
+                    <div class="row">
+                        <input type="password" name="password" class="input-field" placeholder="Password" required>
+                        <img src="{% static 'images/eyeoff.png' %}" alt="Eye Off">
+                    </div>
+                    <div class="row" style="margin-top: 48px;">
+                        <input type="password" name="confirm_password" class="input-field" placeholder="Confirm Password" required>
+                        <img src="{% static 'images/eyeoff.png' %}" alt="Eye Off">
+                    </div>
+                    <div class="links-and-buttons" style="margin-top: 60px;">
+                        <button type="submit" class="sign-in-button">Sign Up</button>
+                        <div class="white-line"></div>
+                        <a href="{% url 'login' %}" class="sign-up">Back to login</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="background-right">
+            <div class="right-side">
+                <div class="image-container">
+                    <img class="dentist-image" src="{% static 'images/Dentist.PNG' %}" alt="Dentist image">
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>
