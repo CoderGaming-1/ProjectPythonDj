@@ -23,7 +23,7 @@
 						<img src="{% static 'images/eyeoff.png' %}" alt="Eye Off">
 					</div>
 					<div class="row" style="margin-top: 48px;">
-						<input type="confirmpassword" name="confirm_password" class="input-field" placeholder="Confirm Password">
+						<input type="password" name="confirm_password" class="input-field" placeholder="Confirm Password" required>
 						<img src="{% static 'images/eyeoff.png' %}" alt="Eye Off">
 					</div>
 					<div class="links-and-buttons" style="margin-top: 60px;">
@@ -32,6 +32,11 @@
 						<a href="{% url 'login' %}" class="sign-up">Back to login</a>
 					</div>
 				</form>
+				<!-- {% if msg %}
+        	<script>
+            	alert("{{ msg }}");
+        	</script>
+    			{% endif %} -->
 			</div>
 		</div>
 		<div class="background-right">
@@ -42,6 +47,15 @@
 		</div>
 	</div>
 	</div>
+	<!-- {% if msg %}
+    <script>
+        alert("{{ msg }}");
+        {% if success %}
+            window.location.href = "{% url 'login' %}";
+        {% endif %}
+    </script>
+	{% endif %} -->
+
 
 </body>
 

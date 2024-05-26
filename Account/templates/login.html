@@ -2,43 +2,60 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Welcome Back</title>
-	<link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600&display=swap" rel="stylesheet">
-	<link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <title>Welcome Back</title>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
-	<div class="background-divider">
-		<div class="background-left">
-			<div class="left-side">
-				<!-- <div class="login-form-white-bg"> -->
-					<form id="form" method="post" action="{% url 'login' %}">
-						{% csrf_token %}
-						<div class="title">Welcome Back</div>
-						<input type="email" name="email" class="input-field" placeholder="Email Address" required>
-						<div class="row">
-							<input type="password" name="password" class="input-field" placeholder="Password" required>
-							<img src="{% static 'images/eyeoff.png' %}" alt="Eye Off">					
-						</div>
-						<div class="forgot-password-row">
-							<a href="{% url 'forgetpass' %}" class="forgot-password">Forgot your password?</a>
-						</div>
-						
-						<div class="links-and-buttons">
-							<button type="submit" class="sign-in-button" id="signin-button">Sign In</button>
-							<div class="white-line"></div>
-							<a href="{% url 'register' %}" class="sign-up">Don't have an account? Sign up</a>
-						</div>
-					</form>
-				<!-- </div> -->
-			</div>
-		</div>
-		<div class="background-right">
-			<div class="right-side">
-				<div class="image-container">
-					<img class="dentist-image" src="{% static 'images/Dentist.PNG' %}" alt="Dentist image">
-				</div>
-			</div>			
-		</div>
-	</div>
+    <div class="background-divider">
+        <div class="background-left">
+            <div class="left-side">
+                <form id="form" method="post" action="{% url 'login' %}">
+                    {% csrf_token %}
+                    <div class="title">Welcome Back</div>
+                    {% if msg %}
+                        <div class="message">{{ msg }}</div>
+                    {% endif %}
+                    <input type="email" id="email" name="email" class="input-field" placeholder="Email Address" required>
+                    <div class="row">
+                        <input type="password" id="password" name="password" class="input-field" placeholder="Password" required>
+                        <img src="{% static 'images/eyeoff.png' %}" alt="Eye Off">
+                    </div>
+                    <div class="forgot-password-row">
+                        <a href="{% url 'forgetpass' %}" class="forgot-password">Forgot your password?</a>
+                    </div>
+                    <div class="links-and-buttons">
+                        <button type="submit" class="sign-in-button" id="signin-button">Sign In</button>
+                        <div class="white-line"></div>
+                        <a href="{% url 'register' %}" class="sign-up">Don't have an account? Sign up</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="background-right">
+            <div class="right-side">
+                <div class="image-container">
+                    <img class="dentist-image" src="{% static 'images/Dentist.PNG' %}" alt="Dentist image">
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.getElementById('form').addEventListener('submit', function(event) {
+            var email = document.getElementById('email').value;
+            var password = document.getElementById('password').value;
+            var emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+            if (!emailPattern.test(email)) {
+                alert('Please enter a valid email address.');
+                event.preventDefault();
+            }
+
+            if (password.length < 6) {
+                alert('Password must be at least 6 characters long.');
+                event.preventDefault();
+            }
+        });
+    </script>
 </body>
 </html>

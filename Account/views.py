@@ -53,120 +53,112 @@ def get_login_view(request):
     return render(request, 'login.html')
 
 def login_view(request):
-    # hngan comment this:
-    # email = request.POST["email"]
-    # password = request.POST["password"]
-    # msg = None
-
-    if request.method == 'POST':    
-        email = request.POST["email"]
-        password = request.POST["password"]
-        msg = None 
-        # try:
-        user = Accounts.objects.filter(email=email, password=password, status=1).first()
+    if request.method == 'POST':
+        email = request.POST.get("email")
+        password = request.POST.get("password")
+        msg = None
         
-        # Verify the password
-        if user: 
-            user_real = user.iduser
-            if user_real:
-                user_role = Roles.objects.filter(id=user_real.idrole.id).first()
-                request.session['iduser'] = user_real.id
-                if user_role.rolename == 'admin':
-                    #return render(request,'admin.html',{'id': user.iduser.id} )
-                    idUser = user.iduser.id
-                    admin_url = reverse('admin', args=[idUser])
-                    return redirect(admin_url)
-                elif user_role.rolename == 'doctor':
-                    schedule_url = reverse('schedule')
-                    # Redirect to the generated URL
-                    return redirect(schedule_url)
-                    #return render(request,'doctor.html', {'id': user.iduser.id})
-                elif user_role.rolename == 'patient':
-                    BookAppointment_url = reverse('BookAppointment')
-                    # Redirect to the generated URL
-                    return redirect(BookAppointment_url)
-                    return render(request,'patient.html',{'id': user.iduser.id})
+        if email and password:
+            # Attempt to find the user with the provided email and password
+            user = Accounts.objects.filter(email=email, password=password).first()
+
+            if user:
+                if user.status == 0:
+                    msg = "Your account has been blocked. Sorry!"
+                else:
+                    user_real = user.iduser
+                    if user_real:
+                        user_role = Roles.objects.filter(id=user_real.idrole.id).first()
+                        request.session['iduser'] = user_real.id
+                        if user_role.rolename == 'admin':
+                            admin_url = reverse('admin', args=[user_real.id])
+                            return redirect(admin_url)
+                        elif user_role.rolename == 'doctor':
+                            schedule_url = reverse('schedule')
+                            return redirect(schedule_url)
+                        elif user_role.rolename == 'patient':
+                            BookAppointment_url = reverse('BookAppointment')
+                            return redirect(BookAppointment_url)
+            else:
+                # User not found or credentials are incorrect
+                msg = "Incorrect email or password. Please try again."
         else:
-            msg = "Fail"
-            return render(request, 'login.html', {'msg': msg})
-        # except Accounts.DoesNotExist:
-        #     msg="Didn't exist"
-        #     return render(request, 'login.html', {'msg': msg})
+            # Email or password not provided
+            msg = "Both email and password are required."
+        
+        return render(request, 'login.html', {'msg': msg})
     else:
         return render(request, 'login.html')
-
 
 def get_register_view(request):
     return render(request, 'register.html')
 def register_view(request):
     msg = None
+    success = False
     if request.method == 'POST':
         email = request.POST.get("email")
         password = request.POST.get("password")
         confirm_password = request.POST.get("confirm_password")
         if password != confirm_password:
-            msg = "Passwords do not match!"
-            return render(request, 'register.html', {'msg': msg})
-
-        if Accounts.objects.filter(email=email).exists():
+            msg = "Oops! Confirm password didn't match with password."
+        elif Accounts.objects.filter(email=email).exists():
             msg = "Email already exists!"
-            return render(request, 'register.html', {'msg': msg})
+        else:
+            try:
+                role = Roles.objects.get(rolename='patient')
 
-        try:
-            role = Roles.objects.get(rolename='patient')
+                new_user = Users(
+                    idrole=role,
+                    name='hoangphan',
+                    birth=None,
+                    gender=None,
+                    phonenumber='012576127',
+                    nation='',
+                    graduation='Truong DHBK DaNang',
+                    status=1,
+                    description='',
+                    createdby=0,
+                    createddate=timezone.now(),
+                    updatedby=0,
+                    updateddate=timezone.now(),
+                    avatar=None
+                )
+                new_user.save()
 
-            new_user = Users(
-                idrole=role,
-                name='hongngan',
-                birth=None,
-                gender=None,
-                phonenumber='123456789',
-                nation='',
-                graduation='Truong DHBK DaNang',
-                status=1, 
-                description='',
-                createdby=0,  
-                createddate=timezone.now(),
-                updatedby=0, 
-                updateddate=0,
-                avatar=None
-            )
-            new_user.save()
+                new_account = Accounts(
+                    iduser=new_user,
+                    email=email,
+                    password=password,
+                    status=1,
+                    description='',
+                    createdby=0,
+                    createddate=timezone.now(),
+                    updatedby=0,
+                    updateddate=timezone.now()
+                )
+                new_account.save()
 
-            new_account = Accounts(
-                iduser=new_user,
-                email=email,
-                password=password,  
-                status=1,
-                description='',
-                createdby=0, 
-                createddate=timezone.now(),
-                updatedby=0, 
-                updateddate=timezone.now()
-            )
-            new_account.save()
+                new_medical_record = Medicalrecords(
+                    iduser=new_user,
+                    bloodtype='A+',
+                    allergy='Ill',
+                    status=1,
+                    description='',
+                    creadtedby=0,
+                    createddate=timezone.now(),
+                    updatedby=0,
+                    updateddate=timezone.now()
+                )
+                new_medical_record.save()
 
-            new_medical_record = Medicalrecords(
-                iduser=new_user,
-                bloodtype='O',  
-                allergy='Mentally', 
-                status=1,  
-                description='',
-                creadtedby=0, 
-                createddate=timezone.now(),
-                updatedby=0,  
-                updateddate=timezone.now()
-            )
-            new_medical_record.save()
-            return redirect('/Account/login')
-        except Roles.DoesNotExist:
-            msg = "Role does not exist!"
-            return render(request, 'register.html', {'msg': msg})
-        except Exception as e:
-            msg = str(e)
-            return render(request, 'register.html', {'msg': msg})
-    else:
-        return render(request, 'register.html', {'msg': msg})
+                msg = "You have signed up a new account successfully!"
+                success = True
+            except Roles.DoesNotExist:
+                msg = "Role does not exist!"
+            except Exception as e:
+                msg = str(e)
+
+    return render(request, 'register.html', {'msg': msg, 'success': success})
     
 def admin(request, idUser):
     return render(request,'admin.html',{'idUser': idUser})
