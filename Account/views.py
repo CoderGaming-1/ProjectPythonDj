@@ -44,12 +44,13 @@ def forget_password(request):
                 fail_silently=False,
             )
             msg = "A new password has been sent to your email."
+            login_url = reverse('login')
+            return redirect(login_url)
         else:
             msg = "Your account does not exist."
+            return render(request, 'password_reset_form.html', {'msg': msg})
 
-        return render(request, 'password_reset_form.html', {'msg': msg})
-
-    return render(request, 'password_reset_form.html')
+    return render(request, 'password_reset_form.html') #, {'msg': msg}
 
 # def index(request):
 #     return render(request, 'login.html')
