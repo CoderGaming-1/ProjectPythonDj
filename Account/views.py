@@ -11,6 +11,7 @@ from .models import Accounts
 from django.conf import settings
 from django.utils.dateparse import parse_date
 import random
+from django.contrib import messages
 import string
 from django.http import JsonResponse
 from django.http import HttpResponseRedirect
@@ -24,26 +25,30 @@ def generate_random_password(length=12):
 
 def forget_password(request):
     if request.method == 'POST':
-        
         email = request.POST.get('email')
-        user_e = Accounts.objects.filter(email=email).first().email
         user_account = Accounts.objects.filter(email=email).first()
+
         if user_account:
             rand_pass = generate_random_password()
             user_account.password = rand_pass
             user_account.save()
-        email_subject = 'Reset your password'
-        email_message = f"We have recover your password. Your password is {rand_pass}"
-        recipients = [email, user_e] #Receiver
-        recipients_tuple = tuple(recipients)
-        send_mail(
-            email_subject,
-            email_message,
-            settings.EMAIL_HOST_USER,  # Replace with your email
-            [email],
-            fail_silently=False,
-        )
-        return render(request, 'login.html')
+
+            email_subject = 'Reset your password'
+            email_message = f"We have recovered your password. Your new password is {rand_pass}"
+
+            send_mail(
+                email_subject,
+                email_message,
+                settings.EMAIL_HOST_USER,  # Replace with your email
+                [email],
+                fail_silently=False,
+            )
+            msg = "A new password has been sent to your email."
+        else:
+            msg = "Your account does not exist."
+
+        return render(request, 'password_reset_form.html', {'msg': msg})
+
     return render(request, 'password_reset_form.html')
 
 # def index(request):
@@ -93,16 +98,15 @@ def login_view(request):
 def get_register_view(request):
     return render(request, 'register.html')
 def register_view(request):
-    msg = None
-    success = False
     if request.method == 'POST':
         email = request.POST.get("email")
         password = request.POST.get("password")
         confirm_password = request.POST.get("confirm_password")
+
         if password != confirm_password:
-            msg = "Oops! Confirm password didn't match with password."
+            messages.error(request, "Oops! Confirm password didn't match with password.")
         elif Accounts.objects.filter(email=email).exists():
-            msg = "Email already exists!"
+            messages.error(request, "This email has been used.")
         else:
             try:
                 role = Roles.objects.get(rolename='patient')
@@ -144,22 +148,20 @@ def register_view(request):
                     allergy='Ill',
                     status=1,
                     description='',
-                    creadtedby=0,
+                    createdby=0,
                     createddate=timezone.now(),
                     updatedby=0,
                     updateddate=timezone.now()
                 )
                 new_medical_record.save()
 
-                msg = "You have signed up a new account successfully!"
-                success = True
+                messages.success(request, "You have signed up a new account successfully!")
             except Roles.DoesNotExist:
-                msg = "Role does not exist!"
+                messages.error(request, "Role does not exist!")
             except Exception as e:
-                msg = str(e)
+                messages.error(request, f"An error occurred: {str(e)}")
 
-    return render(request, 'register.html', {'msg': msg, 'success': success})
-    
+    return render(request, 'register.html')
 def admin(request, idUser):
     return render(request,'admin.html',{'idUser': idUser})
 
@@ -253,97 +255,90 @@ def doctor_edit(request, idUser):
         # Get current time
     return render(request, 'edit.html', context)
 
+from django.contrib import messages
+from django.shortcuts import render, redirect, reverse
+from django.utils import timezone
+from .models import Users, Accounts, Medicalrecords
+
 def profile_patient(request):
-    if request.method != 'POST':
+    idUser = request.session.get('iduser')
+    if idUser is None:
+        return redirect(reverse('login'))
 
-        #hngan add session
-        idUser = request.session.get('iduser')
-        if idUser is None:
-            login_url = reverse('login')
-            return redirect(login_url)
-        
-        user = Users.objects.get(id=idUser)
-        account = Accounts.objects.filter(iduser=idUser, status=1).first()
-        medical = Medicalrecords.objects.filter(iduser = idUser).first()
-        birth_date = date(user.birth, "Y-m-d")
-        context = {'name': user.name,
-                'phonenumber': user.phonenumber,
-                'nation': user.nation,
-                'birth': birth_date,
-                'gender': user.gender,
-                'email': account.email,
-                'idrole': user.idrole,
-                'bloodtype': medical.bloodtype,
-                'allergy' : medical.allergy,
-                }
-        
-        current_time = timezone.now()
-        return render(request, 'edit_patient.html', context)
-        #Save into database
-    elif ( request.method == 'POST'):
-        name = request.POST.get('name')
-        birth = request.POST.get('birth')
-        gender = request.POST.get('gender')
-        phonenumber = request.POST.get('phonenumber')
-        nation = request.POST.get('nation')
-        email = request.POST.get('email')
-        bloodtype = request.POST.get('bloodtype')
-        allergy = request.POST.get('allergy')
-        current_time = timezone.now()
+    user = Users.objects.get(id=idUser)
+    account = Accounts.objects.filter(iduser=idUser, status=1).first()
+    medical = Medicalrecords.objects.filter(iduser=idUser).first()
+    birth_date = user.birth.strftime("%Y-%m-%d")
+    
+    if request.method == 'POST':
+        if 'name' in request.POST:
+            # Update profile
+            name = request.POST.get('name')
+            birth = request.POST.get('birth')
+            gender = request.POST.get('gender')
+            phonenumber = request.POST.get('phonenumber')
+            nation = request.POST.get('nation')
+            email = request.POST.get('email')
+            bloodtype = request.POST.get('bloodtype')
+            allergy = request.POST.get('allergy')
 
-        # Fetch user, account, and medical records
-        user = Users.objects.get(id=idUser)
-        account = Accounts.objects.filter(iduser=idUser, status=1).first()
-        medical = Medicalrecords.objects.filter(iduser=idUser).first()
-        
-        try:
-            # Update user instance
             user.name = name
             user.birth = birth
             user.gender = True if gender == 'Female' else False
             user.phonenumber = phonenumber
             user.nation = nation
-            user.updateddate = current_time
+            user.updateddate = timezone.now()
             user.updatedby = idUser
             user.save()
 
-            # Update account instance
             if account:
                 account.email = email
-                account.updateddate = current_time
+                account.updateddate = timezone.now()
                 account.updatedby = idUser
                 account.save()
 
-            # Update medical record instance
             if medical:
                 medical.bloodtype = bloodtype
                 medical.allergy = allergy
-                medical.updateddate = current_time
+                medical.updateddate = timezone.now()
                 medical.updatedby = idUser
                 medical.save()
 
-            context = {
-               'name': user.name,
-               'phonenumber': user.phonenumber,
-               'nation': user.nation,
-               'graduation': user.graduation,
-               'birth': user.birth,
-               'gender': user.gender,
-               'user_email': account.email,
-               'idrole': user.idrole,
-               'id_acc': account.iduser.id,
-               'email' : account.email,
-               'bloodtype' : medical.bloodtype,
-               'allergy' : medical.allergy,
-               }
-            
-            return render(request, 'edit_patient.html', context)
+            messages.success(request, 'Profile updated successfully')
+            return redirect('profile_patient')
 
-        except Exception as e:
-            # Handle exceptions
-            # print(f"Error occurred: {e}")
-            return render(request, 'edit_patient.html', context)  # Render an error page  
+        elif 'currentpassword' in request.POST:
+            # Change password
+            current_password = request.POST.get('currentpassword')
+            new_password = request.POST.get('newpassword')
+            confirm_password = request.POST.get('confirmpassword')
+
+            if new_password != confirm_password:
+                messages.error(request, 'New passwords do not match')
+                return redirect('profile_patient')
+
+            if account.password != current_password:
+                messages.error(request, 'Current password is incorrect')
+                return redirect('profile_patient')
+
+            account.password = new_password
+            account.save()
+            messages.success(request, 'Password changed successfully')
+            return redirect('profile_patient')
+
+    context = {
+        'name': user.name,
+        'phonenumber': user.phonenumber,
+        'nation': user.nation,
+        'birth': birth_date,
+        'gender': user.gender,
+        'email': account.email if account else '',
+        'bloodtype': medical.bloodtype if medical else '',
+        'allergy': medical.allergy if medical else '',
+    }
+    
     return render(request, 'edit_patient.html', context)
+
 
 def admin_profile(request, idUser):
 
