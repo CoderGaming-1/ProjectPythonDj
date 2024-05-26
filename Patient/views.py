@@ -96,7 +96,7 @@ def get_HistoryAppointment(request):
         current_time = timezone.now()
         tz = pytz.timezone('Asia/Ho_Chi_Minh')
         current_time_tz_vn = current_time.astimezone(tz)
-        meetings = Meetings.objects.select_related('idschedule', 'idschedule__iduser').filter(status=1, idpatient=patient_id).order_by('-idschedule__startshift')
+        meetings = Meetings.objects.select_related('idschedule', 'idschedule__iduser').filter(idpatient=patient_id).order_by('-idschedule__startshift')
 
         for meeting in meetings:
             # Định dạng trường startshift của mỗi phần tử trong schedules

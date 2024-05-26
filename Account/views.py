@@ -113,18 +113,16 @@ def register_view(request):
 
                 new_user = Users(
                     idrole=role,
-                    name='hoangphan',
+                    name='',
                     birth=None,
                     gender=None,
-                    phonenumber='012576127',
+                    phonenumber='',
                     nation='',
-                    graduation='Truong DHBK DaNang',
+                    graduation='',
                     status=1,
                     description='',
                     createdby=0,
                     createddate=timezone.now(),
-                    updatedby=0,
-                    updateddate=timezone.now(),
                     avatar=None
                 )
                 new_user.save()
@@ -136,22 +134,18 @@ def register_view(request):
                     status=1,
                     description='',
                     createdby=0,
-                    createddate=timezone.now(),
-                    updatedby=0,
-                    updateddate=timezone.now()
+                    createddate=timezone.now()
                 )
                 new_account.save()
 
                 new_medical_record = Medicalrecords(
                     iduser=new_user,
-                    bloodtype='A+',
-                    allergy='Ill',
+                    bloodtype='',
+                    allergy='',
                     status=1,
                     description='',
-                    createdby=0,
-                    createddate=timezone.now(),
-                    updatedby=0,
-                    updateddate=timezone.now()
+                    creadtedby=0,
+                    createddate=timezone.now()
                 )
                 new_medical_record.save()
 
