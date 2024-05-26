@@ -145,26 +145,27 @@ def schedule(request):
     
 def updateDoctor(request):
     try:
-        idDoctor = request.POST["idDoctor"]
+        # idDoctor = request.POST["idDoctor"]
+        iduser = request.session.get('iduser')
         birth = datetime.strptime(request.POST.get("birthDoctor"), "%Y-%m-%d")
         genderStr = request.POST["gender-selected"]
         gender = genderStr == "female"
         newPassword = request.POST["newPass"]
         print(newPassword)
 
-        doctor = Users.objects.get(id=idDoctor)
-        accoutDoctor = Accounts.objects.filter(iduser__id=idDoctor).first()
+        doctor = Users.objects.get(id=iduser)
+        accoutDoctor = Accounts.objects.filter(iduser__id=iduser).first()
         
         if birth or gender: 
             doctor.birth = timezone.make_aware(birth)
             doctor.gender = gender
-            doctor.updatedby =idDoctor
+            doctor.updatedby =iduser
             doctor.updateddate = timezone.localtime(timezone.now())
             doctor.save()
         
         if newPassword:
             accoutDoctor.password = newPassword
-            accoutDoctor.updatedby = idDoctor
+            accoutDoctor.updatedby = iduser
             accoutDoctor.updateddate = timezone.localtime(timezone.now())
             accoutDoctor.save()
 
@@ -220,6 +221,9 @@ def createSchedule(request):
         return HttpResponse(f"Error: {str(e)}")
     
 def getScheduleByStatusTime(idDoctor, status, schedule_time_str):
+    print(idDoctor)
+    print(status)
+    print(schedule_time_str)
     try:
         utc = pytz.utc
         schedule_time = datetime.strptime(schedule_time_str, '%Y-%m-%d %H:%M:%S.%f')
@@ -231,20 +235,23 @@ def getScheduleByStatusTime(idDoctor, status, schedule_time_str):
         # Thêm số giờ vào schedule_time (ví dụ: thêm 3 giờ)
         hours_to_add = 7
         schedule_time_utc = schedule_time_utc + timedelta(hours=hours_to_add)
+        # schedule_time_utc = schedule_time_utc
         # return HttpResponse(str(idDoctor) + ' ' + str(status) + ' ' + str(schedule_time_utc))
         schedule = Schedules.objects.filter(iduser__id=idDoctor, status=status, startshift=schedule_time_utc).order_by('-id').first()
         
         if schedule:
+            print(schedule.id)
             return schedule.id
+            # return HttpResponse(schedule.id)
         else:
             return HttpResponse("No schedule found with the given status and time.")
     
     except Exception as e:
-        return HttpResponse(f"Error: {str(e)}")
+        return HttpResponse(f"Error 1: {str(e)}")
     
 def deleteSchedule(request):
     try:
-        idDoctor = request.POST["idDoctor"]
+        idDoctor = request.session.get('iduser')
         statusStr = request.POST["status"]
         shift = request.POST["shift"]
         status = 0
@@ -281,33 +288,33 @@ def deleteSchedule(request):
         else:
             return HttpResponse("No schedule id found for the given status and shift.") 
     except Exception as e:
-        return HttpResponse(f"Error: {str(e)}")
+        return HttpResponse(f"Error 2: {str(e)}")
     
-def getMeetingByIdSchedule(request):
-    if request.method == 'POST':
-        try:
-            data = json.loads(request.body)
-            idDoctor = data.get('idDoctor')
-            shift = data.get('time')
-            status = data.get('status')
+# def getMeetingByIdSchedule(request):
+#     if request.method == 'POST':
+#         try:
+#             data = json.loads(request.body)
+#             idDoctor = data.get('idDoctor')
+#             shift = data.get('time')
+#             status = data.get('status')
 
-            try:
-                schedule_time = datetime.strptime(shift, '%a %b %d %Y %H:%M:%S')
-                formatted_time = schedule_time.strftime('%Y-%m-%d %H:%M:%S.%f')
-            except ValueError as e:
-                return HttpResponse(f"Error parsing date: {str(e)}")
+#             try:
+#                 schedule_time = datetime.strptime(shift, '%a %b %d %Y %H:%M:%S')
+#                 formatted_time = schedule_time.strftime('%Y-%m-%d %H:%M:%S.%f')
+#             except ValueError as e:
+#                 return HttpResponse(f"Error parsing date: {str(e)}")
         
-            idSchedule = getScheduleByStatusTime(idDoctor, status, formatted_time)
-            # Thực hiện xử lý hoặc truy vấn cơ sở dữ liệu tại đây
-            # Ví dụ: 
-            meeting_info = getMeetingByIdSchedule(request, time, status)
+#             idSchedule = getScheduleByStatusTime(idDoctor, status, formatted_time)
+#             # Thực hiện xử lý hoặc truy vấn cơ sở dữ liệu tại đây
+#             # Ví dụ: 
+#             meeting_info = getMeetingByIdSchedule(request, time, status)
 
-            # Trả về phản hồi JSON
-            return JsonResponse({'meeting_info': meeting_info})
-        except Exception as e:
-            return JsonResponse({'error': str(e)}, status=500)
-    else:
-        return JsonResponse({'error': 'Invalid request method'}, status=405)
+#             # Trả về phản hồi JSON
+#             return JsonResponse({'meeting_info': meeting_info})
+#         except Exception as e:
+#             return JsonResponse({'error': str(e)}, status=500)
+#     else:
+#         return JsonResponse({'error': 'Invalid request method'}, status=405)
 
 def appointment(request):
     iduser = request.session.get('iduser')
