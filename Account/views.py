@@ -61,7 +61,6 @@ def login_view(request):
     if request.method == 'POST':
         email = request.POST.get("email")
         password = request.POST.get("password")
-        msg = None
         
         if email and password:
             # Attempt to find the user with the provided email and password
@@ -84,14 +83,18 @@ def login_view(request):
                         elif user_role.rolename == 'patient':
                             BookAppointment_url = reverse('BookAppointment')
                             return redirect(BookAppointment_url)
+                # Add success message
+                messages.success(request, 'Login Successfully')
             else:
                 # User not found or credentials are incorrect
                 msg = "Incorrect email or password. Please try again."
+                messages.error(request, msg)
         else:
             # Email or password not provided
             msg = "Both email and password are required."
+            messages.error(request, msg)
         
-        return render(request, 'login.html', {'msg': msg})
+        return render(request, 'login.html')
     else:
         return render(request, 'login.html')
 
@@ -474,6 +477,8 @@ def admin_eda(request, idUser,idd):
         user = Users.objects.get(id=idd)
         acc = Accounts()
         user.accounts_set.update(email=email)
+        user.accounts_set.update(updatedby=idd)
+        user.accounts_set.update(updateddate=timezone.now())
         user.name = name
         user.birth = birth
         if gender == 'Female':
@@ -488,11 +493,11 @@ def admin_eda(request, idUser,idd):
         user.updateddate = timezone.now()
         user.save()
 
-        acc.iduser = user
-        acc.email = email
-        acc.updatedby = idd
-        acc.updateddate = timezone.now()
-        acc.save()
+        # acc.iduser = user
+        # acc.email = email
+        # acc.updatedby = idd
+        # acc.updateddate = timezone.now()
+        # acc.save()
 
         # Redirect to the admin_eda page
         return HttpResponseRedirect(reverse('admin_eda', args=(idUser, idd)))
@@ -531,10 +536,16 @@ def admin_ada(request,idUser):
         user.graduation = graduation
         user.description = description
         user.status = 1
+        user.createdby = idUser
+        user.createddate = timezone.now()
         user.save()
 
         account.iduser = user
         account.email = email
+        account.password = "123456"
+        account.createdby = idUser
+        account.createddate  = timezone.now()
+        account.status = 1
         account.save()
 
         return redirect('admin_mda', idUser=idUser)
